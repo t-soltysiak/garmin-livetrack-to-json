@@ -14,7 +14,6 @@ Automatically search for the Garmin Livetrack email in your inbox and output fie
 TIP: for Home Assistant sensors, use can use some rest templates like this:
 
 ```
-
 sensor:
   - platform: rest
     resource: http://127.0.0.1:8200
@@ -65,10 +64,4 @@ template:
     - name: Garmin LiveTrack - heart beats
       unique_id: garmin_livetrack_heartbeats
       state: "{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.heartRateBeatsPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}"
-
-    - name: Procent akumulatora w skrzynce
-      unique_id: procent_akumulatora_w_skrzynce
-      unit_of_measurement: "%"
-      state: "{{ ('{:.2f}'.format(states('sensor.mailbox_battery_voltage') | float - 3) | float * 100 | float / 0.25) | round(0) }}"
-
 ```
