@@ -17,5 +17,8 @@ module.exports = {
 
   // httpHost: 'localhost',
   // httpPort: 8200,
-  // waitForId: 1000,
+  // waitForId: 300,
+
+  // in HA cause default update every 1 minute - token from email will be updated every 5 minutes to prevent connection hammering
+  // updateEveryXrequest: 5,
 };

@@ -17,7 +17,6 @@ TIP: for Home Assistant sensors, use can use some rest templates like this:
 sensor:
   - platform: rest
     resource: http://127.0.0.1:8200
-    scan_interval: 300
     name: Garmin LiveTrack
     value_template: "{{ value_json.trackPoints[-1].dateTime if 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 }}"
     headers:
