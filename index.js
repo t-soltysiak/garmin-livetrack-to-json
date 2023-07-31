@@ -3,6 +3,7 @@ const MailWatcher = require('./lib/MailWatcher');
 const http = require('http');
 const fetch = require('node-fetch');
 const assign = require('assign-deep');
+const { getUnpackedSettings } = require('http2');
 
 const VERSION = require('./package.json').version
 
@@ -33,8 +34,8 @@ try {
 
 let data = {};
 
-const fetchData = async (mailWatcher, res) => {
-  const url = `https://livetrack.garmin.com/services/session/${mailWatcher.sessionInfo.Id}/trackpoints?requestTime=${Date.now()}`;
+const fetchData = async (id, res) => {
+  const url = `https://livetrack.garmin.com/services/session/${id}/trackpoints?requestTime=${Date.now()}`;
   log.info(`Fetching ${url}`);
   const response = await fetch(url);
 
@@ -49,27 +50,33 @@ const fetchData = async (mailWatcher, res) => {
 
   data = await response.json();
   log.info('Got data, writing response');
+  res.writeHead(200, { 'Content-Type': 'application/json' });
   res.write(JSON.stringify(data));
   res.end();
-  log.info('Waiting for next request');
+  log.info('Waiting for next request...');
 };
 
+
+const mailWatcher = new MailWatcher(config);
+
 const requestListener = async (req, res, data) => {
-  res.writeHead(200, { 'Content-Type': 'application/json' });
-
-  const mailWatcher = new MailWatcher(config);
-
-  const waitForId = (mailWatcher) => {
-    if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
-      log.warn("No Garmin Livetrack Session Id/Token available yet, will try again");
-      setTimeout(waitForId, config.waitForId, mailWatcher);
-    } else {
-      log.info("Found Garmin Livetrack Session Id/Token");
-      data = fetchData(mailWatcher, res);
-    }
-  };
-
-  setTimeout(waitForId, config.waitForId, mailWatcher);
+  if (req.url === '/') { // prevent favicon second request
+    log.info();
+    log.info(`New request, clean old and check for new Id/Token`);
+    delete mailWatcher.sessionInfo.Id;
+    delete mailWatcher.sessionInfo.Token;
+    mailWatcher.connect();
+    const timer = setInterval(() => {
+      if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
+        log.info("Waiting for session info...");
+      } else {
+        log.info("Found Garmin Livetrack Session Id/Token");
+        data = fetchData(mailWatcher.sessionInfo.Id, res);
+        clearInterval(timer);
+        return;
+      };  
+    }, 300);
+  }
 };
 
 const httpServer = http.createServer(requestListener);
