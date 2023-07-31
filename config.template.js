@@ -19,6 +19,9 @@ module.exports = {
   // httpPort: 8200,
   // waitForId: 300,
 
-  // in HA cause default update every 1 minute - token from email will be updated every 5 minutes to prevent connection hammering
-  // updateEveryXrequest: 5,
+  // in HA cause default update every 1 minute - token from email will be updated every X minutes to prevent connection hammering also
+  // this parameter is used for update session data - only every X minutes when session is finished (but ongoing updates every minute)
+  // updatesEveryRequest: 5,
+
+  // Getting session id/token+data will be executed on 1 and every 5 request. On 2 - 4 request cache will be used for finished activity
 };

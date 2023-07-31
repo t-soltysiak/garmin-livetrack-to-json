@@ -18,7 +18,7 @@ let config = {
 
   markSeen: false,
   waitForId: 300,
-  updateEveryXrequest: 5,
+  updatesEveryRequest: 5,
 
   httpHost: 'localhost',
   httpPort: 8200,
@@ -32,54 +32,65 @@ try {
   log.warn("You should create an config.js file based on the config.template.js template to overwrite the default values")
 }
 
-let data = {};
+const fetchData = async (id, res, cache) => {
+  if (typeof sessionData !== 'undefined' && cache) {
+    log.info('Skipping fetch, respond from cache');
+  } else {
+    const url = `https://livetrack.garmin.com/services/session/${id}/trackpoints?requestTime=${Date.now()}`;
+    log.info(`Fetching ${url}`);
+    const response = await fetch(url);
 
-const fetchData = async (id, res) => {
-  const url = `https://livetrack.garmin.com/services/session/${id}/trackpoints?requestTime=${Date.now()}`;
-  log.info(`Fetching ${url}`);
-  const response = await fetch(url);
+    if (response.status !== 200) {
+      log.warn("Invalid response received - The previous link may have expired and the new one hasn't been delivered yet?");
+      
+      dataText = await response.text();
+      log.warn(`response: ${dataText}`);
+      
+      return;
+    }
 
-  if (response.status !== 200) {
-    log.warn("Invalid response received - The previous link may have expired and the new one hasn't been delivered yet?");
-    
-    data = await response.text();
-    log.warn(`response: ${data}`);
-    
-    return;
+    log.info('Saving data to object');
+    sessionData = await response.json();
+    log.info('Got data, writing response');
   }
 
-  data = await response.json();
-  log.info('Got data, writing response');
   res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.write(JSON.stringify(data));
+  if (typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined') {
+    finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
+  }
+  log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING, update every minute');
+  res.write(JSON.stringify(sessionData));
   res.end();
   log.info('Waiting for next request...');
 };
 
 const mailWatcher = new MailWatcher(config);
 let counter = 1;
+let finished = false;
+let sessionData = undefined;
 
 const requestListener = async (req, res, data) => {
   if (req.url === '/') { // prevent favicon second request
     log.info();
     log.info(`Request #${counter} from client`);
-    if (counter === 1 || !(counter % config.updateEveryXrequest)) {
+    if (counter === 1 || !(counter % config.updatesEveryRequest)) {
       log.info('Checking email for new session');
       delete mailWatcher.sessionInfo.Id;
       delete mailWatcher.sessionInfo.Token;
       mailWatcher.connect();
-    }
-    counter++;
+    }    
+    
     const timer = setInterval(() => {
       if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
         log.info("Waiting for session info...");
       } else {
-        log.info("Found Garmin Livetrack session");
-        data = fetchData(mailWatcher.sessionInfo.Id, res);
+        log.info("Found Garmin session, fetching");
+        fetchData(mailWatcher.sessionInfo.Id, res, (finished || (counter % config.updatesEveryRequest === 0)));
         clearInterval(timer);
         return;
       };
     }, config.waitForId);
+    counter++;
   }
 };
 
