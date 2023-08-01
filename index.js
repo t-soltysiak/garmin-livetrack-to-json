@@ -58,11 +58,12 @@ const fetchData = async (id, res, cache) => {
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
   finished = true;
-  if (typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && typeof sessionData.trackPoints.fitnessPointData !== 'undefined') {
+  fetchedData = typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && typeof sessionData.trackPoints.fitnessPointData !== 'undefined';
+  if (fetchedData) {
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
   };
   log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING, update every minute');
-  res.write(JSON.stringify(sessionData));
+  if (fetchedData) res.write(JSON.stringify(sessionData)); else log.info('Empty response - no fetched data');
   res.end();
   log.info('Waiting for next request...');
 };
@@ -70,6 +71,7 @@ const fetchData = async (id, res, cache) => {
 const mailWatcher = new MailWatcher(config);
 let counter = 1;
 let finished = false;
+let fetchedData = false;
 let sessionData = undefined;
 let oldSessionId = undefined;
 
