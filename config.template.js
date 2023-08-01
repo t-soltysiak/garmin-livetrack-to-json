@@ -21,8 +21,13 @@ module.exports = {
   // waitForId: 300,
 
   // in HA cause default update every 1 minute - token from email will be updated every X minutes to prevent connection hammering also
-  // this parameter is used for update session data - only every X minutes when session is finished (but ongoing updates every minute)
-  // updatesEveryRequest: 5,
+  // updateMailPerRequest: 5,
 
-  // Getting session id/token+data will be executed on 1 and every 5 request. On 2 - 4 request cache will be used for finished activity
+  // this parameter is used for update session data - only every X minutes when session is finished (but ongoing updates every minute)
+  // updateDataPerRequest: 30,
+
+  // Getting session id/token will be executed on 1 and every {updateMailPerRequest} request.
+  // Getting session data will be executed on 1 and every {updateDataPerRequest} request or if service detect new session Id (different from old)
+  // For request like e.g. 2-4 request (for email) or 2-29 request (for data) cache will be used instead fetch request (only for finished activity)
+
 };

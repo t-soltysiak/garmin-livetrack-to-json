@@ -19,7 +19,8 @@ let config = {
 
   markSeen: false,
   waitForId: 300,
-  updatesEveryRequest: 5,
+  updateMailPerRequest: 5,
+  updateDataPerRequest: 30,
 
   httpHost: 'localhost',
   httpPort: 8200,
@@ -69,13 +70,15 @@ const mailWatcher = new MailWatcher(config);
 let counter = 1;
 let finished = false;
 let sessionData = undefined;
+let oldSessionId = undefined;
 
 const requestListener = async (req, res, data) => {
   if (req.url === '/') { // prevent favicon second request
     log.info();
     log.info(`Request #${counter} from client`);
-    if (counter === 1 || !(counter % config.updatesEveryRequest)) {
+    if (counter === 1 || !(counter % config.updateMailPerRequest)) {
       log.info('Checking email for new session');
+      oldSessionId = mailWatcher.sessionInfo.Id;
       delete mailWatcher.sessionInfo.Id;
       delete mailWatcher.sessionInfo.Token;
       mailWatcher.connect();
@@ -85,8 +88,8 @@ const requestListener = async (req, res, data) => {
       if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
         log.info("Waiting for session info...");
       } else {
-        log.info("Found Garmin session, fetching");
-        fetchData(mailWatcher.sessionInfo.Id, res, (finished || (counter % config.updatesEveryRequest === 0)));
+        log.info(`Found ${oldSessionId != mailWatcher.sessionInfo.Id ? 'same' : 'new'} Garmin session, fetching`);
+        fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest === 0 || oldSessionId != mailWatcher.sessionInfo.Id));
         clearInterval(timer);
         return;
       };
