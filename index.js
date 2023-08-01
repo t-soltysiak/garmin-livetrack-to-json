@@ -87,7 +87,8 @@ const requestListener = async (req, res, data) => {
       if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
         log.info("Waiting for session info...");
       } else {
-        log.info(`Found ${oldSessionId != mailWatcher.sessionInfo.Id ? 'same' : 'new'} Garmin session, fetching`);
+        log.info('Found Garmin session, comparing');
+        log.info(`old: ${oldSessionId} vs new: ${mailWatcher.sessionInfo.Id} => ${oldSessionId === mailWatcher.sessionInfo.Id ? 'same' : 'new'} session`);        
         oldSessionId = mailWatcher.sessionInfo.Id;
         fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || oldSessionId === mailWatcher.sessionInfo.Id));
         clearInterval(timer);
