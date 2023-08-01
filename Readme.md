@@ -23,6 +23,7 @@ sensor:
       Content-Type: application/json
     json_attributes_path: "$.trackPoints[-1:]"
     json_attributes:
+      - altitude
       - cadenceCyclesPerMin
       - dateTime
       - distanceMeters
@@ -51,7 +52,10 @@ template:
     - name: Garmin LiveTrack - distance
       unique_id: garmin_livetrack_distance
       state: "{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.distanceMeters | int(0) )/1000 | round(1) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}"
-    - name: Garmin LiveTrack - speed.
+    - name: Garmin LiveTrack - altitude
+      unique_id: garmin_livetrack_altitude
+      state: "{{ states.sensor.garmin_livetrack.attributes.altitude if 'altitude' in states.sensor.garmin_livetrack.attributes }}"
+    - name: Garmin LiveTrack - speed
       unique_id: garmin_livetrack_speed
       state: "{{ (states.sensor.garmin_livetrack.attributes.speed)*3.6 if 'speed' in states.sensor.garmin_livetrack.attributes }}"
     - name: Garmin LiveTrack - cadence
