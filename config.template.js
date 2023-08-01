@@ -24,10 +24,10 @@ module.exports = {
   // updateMailPerRequest: 5,
 
   // this parameter is used for update session data - only every X minutes when session is finished (but ongoing updates every minute)
-  // updateDataPerRequest: 30,
+  // updateDataPerRequest: 360,
 
   // Getting session id/token will be executed on 1 and every {updateMailPerRequest} request.
   // Getting session data will be executed on 1 and every {updateDataPerRequest} request or if service detect new session Id (different from old)
-  // For request like e.g. 2-4 request (for email) or 2-29 request (for data) cache will be used instead fetch request (only for finished activity)
+  // For request like e.g. 2-4 request (for email) or 2-359 request (for data) cache will be used instead fetch request (only for finished activity)
 
 };

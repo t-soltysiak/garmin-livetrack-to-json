@@ -20,7 +20,7 @@ let config = {
   markSeen: false,
   waitForId: 300,
   updateMailPerRequest: 5,
-  updateDataPerRequest: 30,
+  updateDataPerRequest: 360,
 
   httpHost: 'localhost',
   httpPort: 8200,
