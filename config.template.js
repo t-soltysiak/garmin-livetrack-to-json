@@ -8,6 +8,7 @@ module.exports = {
   // port: 993,
   // tls: true,
   // secure: true,
+  // keepalive: true,
   
   // Folder to look for the email in, defaults to INBOX but if you're using gmail and it doesn't find it try uncommenting the All Mail folder
   // label: '[Gmail]/All Mail',

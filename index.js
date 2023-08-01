@@ -14,6 +14,7 @@ let config = {
   port: 993,
   tls: true,
   secure: true,
+  keepalive: true,
   label: 'INBOX',
 
   markSeen: false,
