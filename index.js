@@ -76,7 +76,7 @@ const requestListener = async (req, res, data) => {
   if (req.url === '/') { // prevent favicon second request
     log.info();
     log.info(`Request #${counter} from client`);
-    if (counter === 1 || !(counter % config.updateMailPerRequest)) {
+    if (counter === 1 || counter % config.updateMailPerRequest === 0) {
       log.info('Checking email for new session');
       oldSessionId = mailWatcher.sessionInfo.Id;
       delete mailWatcher.sessionInfo.Id;
@@ -89,7 +89,7 @@ const requestListener = async (req, res, data) => {
         log.info("Waiting for session info...");
       } else {
         log.info(`Found ${oldSessionId != mailWatcher.sessionInfo.Id ? 'same' : 'new'} Garmin session, fetching`);
-        fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest === 0 || oldSessionId != mailWatcher.sessionInfo.Id));
+        fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || oldSessionId === mailWatcher.sessionInfo.Id));
         clearInterval(timer);
         return;
       };
