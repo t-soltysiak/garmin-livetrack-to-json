@@ -57,7 +57,7 @@ const fetchData = async (id, res, cache) => {
   }
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
-  if (typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined') {
+  if (typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && typeof sessionData.trackPoints.fitnessPointData !== 'undefined') {
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
   }
   log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING, update every minute');
