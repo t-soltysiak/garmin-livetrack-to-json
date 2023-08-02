@@ -58,10 +58,14 @@ const fetchData = async (id, res, cache) => {
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
   finished = true;
-  fetchedData = typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && typeof sessionData.trackPoints.fitnessPointData !== 'undefined';
+  fetchedData = (typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && typeof sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData !== 'undefined');
   if (fetchedData) {
+    log.info('Data is fetched. Activity status check');
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
-  };
+  } else {
+    log.info('Data is not fetched or empty:');
+    log.info(sessionData);
+  }
   log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING, update every minute');
   if (fetchedData) res.write(JSON.stringify(sessionData)); else log.info('Empty response - no fetched data');
   res.end();
@@ -81,6 +85,7 @@ const requestListener = async (req, res, data) => {
     log.info(`Request #${counter} from client`);
     if (counter === 1 || counter % config.updateMailPerRequest === 0) {
       log.info('Checking email for new session');
+      oldSessionId = mailWatcher.sessionInfo.Id;
       delete mailWatcher.sessionInfo.Id;
       delete mailWatcher.sessionInfo.Token;
       mailWatcher.connect();
@@ -92,8 +97,7 @@ const requestListener = async (req, res, data) => {
       } else {
         log.info('Found Garmin session, comparing');
         log.info(`old: ${oldSessionId} vs new: ${mailWatcher.sessionInfo.Id} => ${oldSessionId === mailWatcher.sessionInfo.Id ? 'same' : 'new'} session`);        
-        oldSessionId = mailWatcher.sessionInfo.Id;
-        fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || oldSessionId === mailWatcher.sessionInfo.Id));
+        fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || oldSessionId != mailWatcher.sessionInfo.Id));
         clearInterval(timer);
         return;
       };
