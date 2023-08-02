@@ -13,6 +13,27 @@ Automatically search for the Garmin Livetrack email in your inbox and output fie
 
 TIP: for Home Assistant sensors, use can use some rest templates like this:
 
+1) Run as service:
+create file /etc/systemd/system/garmin.service:
+```
+[Unit]
+Description=Garmin Live Track monitor
+After=multi-user.target
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/homeassistant/garmin
+ExecStart=npm start
+
+[Install]
+WantedBy=multi-user.target
+```
+run
+```
+systemctl enable --now garmin
+```
+
+2) Edit configuration.yaml in HA:
 ```
 sensor:
   - platform: rest
@@ -68,3 +89,53 @@ template:
       unique_id: garmin_livetrack_heartbeats
       state: "{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.heartRateBeatsPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}"
 ```
+
+3) Edit dashboard Yaml:
+```
+- type: conditional
+    conditions:
+      - entity: sensor.garmin_livetrack
+        state_not: unavailable
+    card:
+      type: entities
+      title: 'LiveTrack: Tomasz'
+      entities:
+        - entity: sensor.garmin_livetrack_finished
+          name: Status aktywności
+          icon: mdi:progress-check
+        - entity: sensor.garmin_livetrack_activity
+          name: Rodzaj aktywności
+          icon: mdi:bike-fast
+        - entity: sensor.garmin_livetrack_created_time
+          name: Czas rozpoczęcia
+          icon: mdi:av-timer
+        - entity: sensor.garmin_livetrack_duration
+          name: Czas trwania
+          icon: mdi:av-timer
+        - entity: sensor.garmin_livetrack_distance
+          name: Dystans w km
+          icon: mdi:arrow-up-down-bold
+        - entity: sensor.garmin_livetrack_altitude
+          name: Wysokość w m n.p.m.
+          icon: mdi:altimeter
+        - entity: sensor.garmin_livetrack_speed
+          name: Prędkość w km/h
+          icon: mdi:speedometer
+        - entity: sensor.garmin_livetrack_cadence
+          name: Kadencja w obr./min.
+          icon: mdi:reload
+        - entity: sensor.garmin_livetrack_power_watts
+          name: Pomiar mocy w watach
+          icon: mdi:shoe-cleat
+        - entity: sensor.garmin_livetrack_heart_beats
+          name: Tętno - uderzeń/min.
+          icon: mdi:heart-multiple
+        - entity: sensor.garmin_livetrack_datetime
+          name: Czas aktualizacji
+          icon: mdi:av-timer
+```
+
+Above HA Conditional Card https://www.home-assistant.io/dashboards/conditional/ automatically will show when LiveTrack status is on going or recently finished.
+If not data is fetched from Garmin servers (see logs e. g. with systemctl status garmin -n 50) card will be not visible to not take up space on the dashboards.
+
+Enjoy!
