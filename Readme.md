@@ -138,4 +138,8 @@ template:
 Above HA Conditional Card https://www.home-assistant.io/dashboards/conditional/ automatically will show when LiveTrack status is on going or recently finished.
 If not data is fetched from Garmin servers (see logs e. g. with systemctl status garmin -n 50) card will be not visible to not take up space on the dashboards.
 
+Some screenshot:
+<img width="480" alt="Zrzut ekranu 2023-08-2 o 12 14 01" src="https://github.com/t-soltysiak/garmin-livetrack-to-json/assets/68973012/a58e8be9-9145-4cdb-beba-758471423abe">
+
+
 Enjoy!
