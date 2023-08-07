@@ -90,7 +90,12 @@ const requestListener = async (req, res) => {
       oldSessionId = mailWatcher.sessionInfo.Id;
       delete mailWatcher.sessionInfo.Id;
       delete mailWatcher.sessionInfo.Token;
-      mailWatcher.connect();
+      try {
+        mailWatcher.connect();
+      }
+      catch(error) {
+        log.error(`Connection error: ${error}`);
+      }
     }    
     
     let waitCount = 0;
