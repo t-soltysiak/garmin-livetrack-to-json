@@ -14,6 +14,7 @@ let config = {
   port: 587,
   tls: true,
   secure: false,
+  secureProtocol: 'TLS_method',
   keepalive: true,
   label: 'INBOX',
 
