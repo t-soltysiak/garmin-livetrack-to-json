@@ -104,6 +104,7 @@ const requestListener = async (req, res) => {
         log.info("Waiting for session info...");
         waitCount++;
         if (waitCount >= config.maxWaitForSession) {
+          waitCount = 0;
           clearInterval(timer);
           log.info(`Session not found in ${waitCount} attemps`);
           log.info('Waiting for next request...');
@@ -112,6 +113,7 @@ const requestListener = async (req, res) => {
           return;
         }
       } else {
+        waitCount = 0;
         clearInterval(timer);
         log.info('Found Garmin session, comparing');
         log.info(`old: ${oldSessionId} vs new: ${mailWatcher.sessionInfo.Id} => ${oldSessionId === mailWatcher.sessionInfo.Id ? 'same' : 'new'} session`);
@@ -119,7 +121,6 @@ const requestListener = async (req, res) => {
         fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || (oldSessionId === mailWatcher.sessionInfo.Id && !finished)));
         return;
       };
-      
     }, config.waitForId);
     counter++;
   }
