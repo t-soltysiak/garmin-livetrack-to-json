@@ -38,7 +38,7 @@ try {
 
 const fetchData = async (id, res, cache) => {
   if (typeof sessionData !== 'undefined' && cache || typeof id === 'undefined') {
-    log.info('Skipping fetch, respond from cache');
+    log.info('Skipping fetch, respond from cache or empty');
   } else {
     const url = `https://livetrack.garmin.com/services/session/${id}/trackpoints?requestTime=${Date.now()}`;
     log.info(`Fetching ${url}`);
@@ -69,7 +69,10 @@ const fetchData = async (id, res, cache) => {
     log.info(sessionData);
   }
   log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING, update every minute');
-  if (fetchedData) res.write(JSON.stringify(sessionData)); else log.info('Empty response - no fetched data');
+  if (fetchedData) res.write(JSON.stringify(sessionData)); else {
+    log.info('Empty response - no fetched data');
+    res.write('{}');
+  }
   res.end();
   log.info('Waiting for next request...');
 };
