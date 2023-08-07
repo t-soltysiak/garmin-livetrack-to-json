@@ -69,10 +69,7 @@ const fetchData = async (id, res, cache) => {
     log.info(sessionData);
   }
   log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING, update every minute');
-  if (fetchedData) res.write(JSON.stringify(sessionData)); else {
-    log.info('Empty response - no fetched data');
-    res.write('{}');
-  }
+  if (fetchedData) res.write(JSON.stringify(sessionData));
   res.end();
   log.info('Waiting for next request...');
 };
@@ -84,7 +81,7 @@ let fetchedData = false;
 let sessionData = undefined;
 let oldSessionId = undefined;
 
-const requestListener = async (req, res, data) => {
+const requestListener = async (req, res) => {
   if (req.url === '/') { // prevent favicon second request
     log.info();
     log.info(`Request #${counter} from client`);
@@ -102,19 +99,22 @@ const requestListener = async (req, res, data) => {
         log.info("Waiting for session info...");
         waitCount++;
         if (waitCount >= config.maxWaitForSession) {
+          clearInterval(timer);
           log.info(`Session not found in ${waitCount} attemps`);
           log.info('Waiting for next request...');
-          clearInterval(timer);
+          res.write('{}');
+          res.end();
           return;
         }
       } else {
+        clearInterval(timer);
         log.info('Found Garmin session, comparing');
         log.info(`old: ${oldSessionId} vs new: ${mailWatcher.sessionInfo.Id} => ${oldSessionId === mailWatcher.sessionInfo.Id ? 'same' : 'new'} session`);
-        clearInterval(timer);
+        log.info('Fetch data - we must output data');
+        fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || (oldSessionId === mailWatcher.sessionInfo.Id && !finished)));
         return;
       };
-      log.info('Fetch data - we must output data (even cached)');
-      fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || (oldSessionId === mailWatcher.sessionInfo.Id && !finished)));
+      
     }, config.waitForId);
     counter++;
   }
