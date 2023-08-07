@@ -10,7 +10,7 @@ let config = {
   username: '',
   password: '',
 
-  host: 'imap.gmail.com',
+  host: 'localhost',
   port: 993,
   tls: true,
   secure: true,
@@ -19,7 +19,7 @@ let config = {
 
   markSeen: false,
   waitForId: 300,
-  updateMailPerRequest: 5,
+  updateMailPerRequest: 3,
   updateDataPerRequest: 360,
 
   httpHost: 'localhost',
