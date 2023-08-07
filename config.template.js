@@ -2,7 +2,7 @@ module.exports = {
   // Mail credentials
   username: 'your.email@domain.com',
   password: 'your_password',
-  host: 'localhost',
+  host: 'domain.com', // same as host with SSL cert
 
   // IMAP host to connect to to read the email from garmin, recommended local server (postfix)
   // gMail IS NOT recommended cause after so many request there will be timeouts of connection
