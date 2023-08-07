@@ -13,8 +13,7 @@ let config = {
   host: 'localhost',
   port: 587,
   tls: true,
-  secure: true,
-  secureProtocol: 'SSLv3_method',
+  secure: false,
   keepalive: true,
   label: 'INBOX',
 
