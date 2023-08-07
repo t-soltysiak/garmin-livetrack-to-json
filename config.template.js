@@ -1,6 +1,6 @@
 module.exports = {
   // Mail credentials
-  username: 'your.email@domain.com',
+  username: 'email_account', // usualy without domain (in gmail ussually with ;)
   password: 'your_password',
   host: 'domain.com', // same as host with SSL cert
 
