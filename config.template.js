@@ -1,9 +1,14 @@
 module.exports = {
   // Mail credentials
-  username: 'your.email@gmail.com',
+  username: 'your.email@domain.com',
   password: 'your_password',
+  host: 'localhost',
 
-  // IMAP host to connect to to read the email from garmin, defaults to gmail
+  // IMAP host to connect to to read the email from garmin, recommended local server (postfix)
+  // gMail IS NOT recommended cause after so many request there will be timeouts of connection
+  // most propably it's because firewall blocks such amount of connections & also it is slower
+
+  // defaults to gmail
   // host: 'imap.gmail.com',
   // port: 993,
   // tls: true,
