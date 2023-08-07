@@ -23,7 +23,7 @@ After=multi-user.target
 Type=simple
 Restart=always
 WorkingDirectory=/home/homeassistant/garmin
-ExecStart=npm start
+ExecStart=/usr/bin/npm start
 
 [Install]
 WantedBy=multi-user.target
