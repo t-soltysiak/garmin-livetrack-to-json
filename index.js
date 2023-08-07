@@ -46,10 +46,8 @@ const fetchData = async (id, res, cache) => {
 
     if (response.status !== 200) {
       log.warn("Invalid response received - The previous link may have expired and the new one hasn't been delivered yet?");
-      
       dataText = await response.text();
       log.warn(`response: ${dataText}`);
-      
       return;
     }
 
@@ -96,11 +94,11 @@ const requestListener = async (req, res) => {
       catch(error) {
         log.error(`Connection error: ${error}`);
       }
-    }    
-    
+    }
+
     let waitCount = 0;
     const timer = setInterval(() => {
-      if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
+      if (false/*!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token */) {
         log.info("Waiting for session info...");
         waitCount++;
         if (waitCount >= config.maxWaitForSession) {
