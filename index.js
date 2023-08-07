@@ -98,13 +98,13 @@ const requestListener = async (req, res) => {
 
     let waitCount = 0;
     const timer = setInterval(() => {
-      if (true/*!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token */) {
+      if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
         log.info("Waiting for session info...");
         waitCount++;
         if (waitCount >= config.maxWaitForSession) {
+          log.info(`Session not found in ${waitCount} attemps`);
           waitCount = 0;
           clearInterval(timer);
-          log.info(`Session not found in ${waitCount} attemps`);
           log.info('Waiting for next request...');
           res.write('{}');
           res.end();
