@@ -37,7 +37,7 @@ try {
 }
 
 const fetchData = async (id, res, cache) => {
-  if (typeof sessionData !== 'undefined' && typeof id !== 'undefined' && cache) {
+  if (typeof sessionData !== 'undefined' && cache || typeof id === 'undefined') {
     log.info('Skipping fetch, respond from cache');
   } else {
     const url = `https://livetrack.garmin.com/services/session/${id}/trackpoints?requestTime=${Date.now()}`;
@@ -60,7 +60,7 @@ const fetchData = async (id, res, cache) => {
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
   finished = true;
-  fetchedData = (typeof sessionData !== 'undefined' && typeof id !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && typeof sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData !== 'undefined');
+  fetchedData = (typeof sessionData !== 'undefined' && typeof sessionData.Id !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && typeof sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData !== 'undefined');
   if (fetchedData) {
     log.info('Data is fetched. Activity status check');
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
