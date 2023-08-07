@@ -93,7 +93,7 @@ const requestListener = async (req, res, data) => {
       mailWatcher.connect();
     }    
     
-    const waitCount = 0;
+    let waitCount = 0;
     const timer = setInterval(() => {
       if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
         log.info("Waiting for session info...");
