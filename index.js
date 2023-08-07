@@ -11,7 +11,7 @@ let config = {
   password: '',
 
   host: 'localhost',
-  port: 587,
+  port: 993,
   tls: true,
   secure: false,
   secureProtocol: 'TLS_method',
