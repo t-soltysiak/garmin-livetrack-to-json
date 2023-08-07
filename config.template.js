@@ -13,8 +13,9 @@ module.exports = {
   // port: 993, default is 587 (usually postfix use that port)
   // tls: true,
   // secure: true,
-  // keepalive: true,
-  
+  // keepalive: false,
+  // ^ better do not set keepalive to true if using postman+dovecot + mail_max_userip_connections connection - it will reach this limit soon
+
   // Folder to look for the email in, defaults to INBOX but if you're using gmail and it doesn't find it try uncommenting the All Mail folder
   // label: '[Gmail]/All Mail',
   

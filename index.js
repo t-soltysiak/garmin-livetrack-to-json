@@ -15,7 +15,7 @@ let config = {
   tls: true,
   secure: false,
   secureProtocol: 'TLS_method',
-  keepalive: true,
+  keepalive: false,
   label: 'INBOX',
 
   markSeen: false,
