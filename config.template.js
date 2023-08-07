@@ -10,7 +10,7 @@ module.exports = {
 
   // defaults to gmail
   // host: 'imap.gmail.com',
-  // port: 993,
+  // port: 993, default is 587 (usually postfix use that port)
   // tls: true,
   // secure: true,
   // keepalive: true,
@@ -22,6 +22,7 @@ module.exports = {
   // markSeen: false,
 
   // httpHost: 'localhost',
+  // set this to 0.0.0.0 if you want to put that on external adress (public on internet! warning, there is no authorization for that)
   // httpPort: 8200,
   // waitForId: 300,
 
