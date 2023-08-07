@@ -113,7 +113,6 @@ const requestListener = async (req, res) => {
           return;
         }
       } else {
-        waitCount = 0;
         clearInterval(timer);
         log.info('Found Garmin session, comparing');
         log.info(`old: ${oldSessionId} vs new: ${mailWatcher.sessionInfo.Id} => ${oldSessionId === mailWatcher.sessionInfo.Id ? 'same' : 'new'} session`);
