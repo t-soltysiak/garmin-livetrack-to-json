@@ -98,7 +98,7 @@ const requestListener = async (req, res) => {
 
     let waitCount = 0;
     const timer = setInterval(() => {
-      if (false/*!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token */) {
+      if (true/*!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token */) {
         log.info("Waiting for session info...");
         waitCount++;
         if (waitCount >= config.maxWaitForSession) {
