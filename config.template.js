@@ -25,7 +25,7 @@ module.exports = {
   // set this to 0.0.0.0 if you want to put that on external adress (public on internet! warning, there is no authorization for that)
   // httpPort: 8200,
   // waitForId: 300,
-  // maxWaitForSession: 15,
+  // maxWaitForSession: 3, // use lower values for localhost thant external mail server which require more time to check inbox
 
   // in HA cause default update every 1 minute - token from email will be updated every X minutes to prevent connection hammering also
   // updateMailPerRequest: 5,

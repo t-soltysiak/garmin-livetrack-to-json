@@ -20,7 +20,7 @@ let config = {
 
   markSeen: false,
   waitForId: 300,
-  maxWaitForSession: 10,
+  maxWaitForSession: 3,
   updateMailPerRequest: 3,
   updateDataPerRequest: 360,
 
