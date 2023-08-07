@@ -106,11 +106,12 @@ const requestListener = async (req, res, data) => {
         }
       } else {
         log.info('Found Garmin session, comparing');
-        log.info(`old: ${oldSessionId} vs new: ${mailWatcher.sessionInfo.Id} => ${oldSessionId === mailWatcher.sessionInfo.Id ? 'same' : 'new'} session`);        
-        fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || (oldSessionId === mailWatcher.sessionInfo.Id && !finished)));
+        log.info(`old: ${oldSessionId} vs new: ${mailWatcher.sessionInfo.Id} => ${oldSessionId === mailWatcher.sessionInfo.Id ? 'same' : 'new'} session`);
         clearInterval(timer);
         return;
       };
+      log.info('Fetch data - we must output data (even cached)');
+      fetchData(mailWatcher.sessionInfo.Id, res, (finished || counter % config.updateDataPerRequest != 0 || (oldSessionId === mailWatcher.sessionInfo.Id && !finished)));
     }, config.waitForId);
     counter++;
   }
