@@ -57,7 +57,7 @@ template:
   - sensor:
     - name: Garmin LiveTrack - data
       unique_id: garmin_livetrack_data
-      state: "available"
+      state: "{{ 'available' if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}"
     - name: Garmin LiveTrack - created time
       unique_id: garmin_livetrack_created_time
       state: "{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.activityCreatedTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}"
