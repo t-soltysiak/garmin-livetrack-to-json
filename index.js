@@ -20,7 +20,7 @@ let config = {
 
   markSeen: false,
   waitForId: 300,
-  maxWaitForSession: 15,
+  maxWaitForSession: 10,
   updateMailPerRequest: 3,
   updateDataPerRequest: 360,
 
@@ -98,7 +98,10 @@ const requestListener = async (req, res, data) => {
       if (!mailWatcher.sessionInfo.Id || !mailWatcher.sessionInfo.Token) {
         log.info("Waiting for session info...");
         waitCount++;
-        if (waitCount >= config.maxWaitForSession) return;
+        if (waitCount >= config.maxWaitForSession) {
+          clearInterval(timer);
+          return;
+        }
       } else {
         log.info('Found Garmin session, comparing');
         log.info(`old: ${oldSessionId} vs new: ${mailWatcher.sessionInfo.Id} => ${oldSessionId === mailWatcher.sessionInfo.Id ? 'same' : 'new'} session`);        
