@@ -99,6 +99,8 @@ const requestListener = async (req, res, data) => {
         log.info("Waiting for session info...");
         waitCount++;
         if (waitCount >= config.maxWaitForSession) {
+          log.info(`Session not found in ${maxWaitForSession} attemps`);
+          log.info('Waiting for next request...');
           clearInterval(timer);
           return;
         }
