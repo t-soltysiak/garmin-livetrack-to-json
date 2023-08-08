@@ -92,6 +92,7 @@ const requestListener = async (req, res) => {
       }
       catch(error) {
         log.error(`Connection error: ${error}`);
+        mailWatcher._imap.end();
       }
     }
 
