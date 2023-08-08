@@ -57,7 +57,7 @@ const fetchData = async (id, res, cache) => {
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
   finished = true;
-  fetchedData = typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined';
+  fetchedData = typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && sessionData.trackPoints.length > 0 && typeof sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData !== 'undefined';
   if (fetchedData) {
     log.info('Data is fetched. Activity status check');
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
