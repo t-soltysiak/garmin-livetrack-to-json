@@ -66,7 +66,7 @@ const fetchData = async (id, res, cache) => {
     log.info(sessionData);
   }
   log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING, update every minute');
-  if (fetchedData) res.write(JSON.stringify(sessionData));
+  if (fetchedData) res.write(JSON.stringify(sessionData)); else res.write('{}');
   res.end();
   log.info('Waiting for next request...');
 };
