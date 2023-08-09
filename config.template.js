@@ -1,4 +1,6 @@
 module.exports = {
+  secretPath: 'b50ff165-effa-45d6-b24b-6ff06a03e846', // generate some different e. g. UUID v4 to protect privacy of URL endpoint at least a little
+
   // Mail credentials
   username: 'email_account', // usualy without domain (in gmail ussually with ;)
   password: 'your_password',

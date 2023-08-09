@@ -7,6 +7,7 @@ const assign = require('assign-deep');
 const VERSION = require('./package.json').version
 
 let config = {
+  secretPath: 'b50ff165-effa-45d6-b24b-6ff06a03e846',
   username: '',
   password: '',
 
@@ -79,7 +80,7 @@ let sessionData = undefined;
 let oldSessionId = undefined;
 
 const requestListener = async (req, res) => {
-  if (req.url === '/') { // prevent favicon second request
+  if (req.url === `/${config.secretPath}`) {
     log.info();
     log.info(`Request #${counter} from client`);
     if (counter === 1 || counter % config.updateMailPerRequest === 0) {
@@ -120,6 +121,8 @@ const requestListener = async (req, res) => {
       };
     }, config.waitForId);
     counter++;
+  } else {
+    res.end();
   }
 };
 
