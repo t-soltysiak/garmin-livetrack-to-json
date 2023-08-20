@@ -78,7 +78,7 @@ const requestListener = async (req, res) => {
   if (req.url === `/${config.secretPath}`) {
     log.info();
     log.info(`Request #${counter} from client`);
-    if (config.account && fs.statSync(`/var/mail${config.account}`).size > 0) {
+    if (!config.account || config.account && fs.statSync(`/var/mail${config.account}`).size > 0) {
       log.info('Checking email for new session');
       try {
         mail.connect();
@@ -87,32 +87,32 @@ const requestListener = async (req, res) => {
         log.error(`Connection error: ${error}`);
         mail._imap.end();
       }
+
+      let waitCount = 0;
+      const timer = setInterval(() => {
+        if (!mail.sessionInfo.Id || !mail.sessionInfo.Token) {
+          log.info("Waiting for session info...");
+          waitCount++;
+          if (waitCount >= config.maxWaitForSession) {
+            log.info(`Session not found in ${waitCount} attemps`);
+            waitCount = 0;
+            clearInterval(timer);
+            log.info('Waiting for next request...');
+            res.write('{}');
+            res.end();
+            return;
+          }
+        } else {
+          clearInterval(timer);
+          log.info('Found Garmin session, fetching data');
+          fetchData(mail.sessionInfo.Id, res);
+          return;
+        };
+      }, config.waitForId);
+      counter++;
     } else {
       log.info('Skipping imap connect, mail file is empty');
     }
-
-    let waitCount = 0;
-    const timer = setInterval(() => {
-      if (!mail.sessionInfo.Id || !mail.sessionInfo.Token) {
-        log.info("Waiting for session info...");
-        waitCount++;
-        if (waitCount >= config.maxWaitForSession) {
-          log.info(`Session not found in ${waitCount} attemps`);
-          waitCount = 0;
-          clearInterval(timer);
-          log.info('Waiting for next request...');
-          res.write('{}');
-          res.end();
-          return;
-        }
-      } else {
-        clearInterval(timer);
-        log.info('Found Garmin session, fetching data');
-        fetchData(mail.sessionInfo.Id, res);
-        return;
-      };
-    }, config.waitForId);
-    counter++;
   } else {
     res.end();
   }
