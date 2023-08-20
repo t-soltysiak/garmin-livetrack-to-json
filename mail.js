@@ -1,8 +1,8 @@
 const Imap = require('imap');
 const mimelib = require('mimelib');
-const log = require('signale').scope('MailWatcher');
+const log = require('signale').scope('Mail');
 
-module.exports = class MailWatcher {
+module.exports = class Mail {
   constructor(config) {
     log.info("Initialising");
     

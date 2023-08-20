@@ -5,7 +5,9 @@ module.exports = {
   username: 'email_account', // usualy without domain (in gmail ussually with ;)
   password: 'your_password',
   host: 'domain.com', // same as host with SSL cert
-
+  account: 'ha', // If specified which is recommended, instead of checking email every minute which will propably be blocked by mail server, watch local server file in /var/mail/{account} filesize
+  // If file size of this file will be greater than zero it means propably new email arrived - than fetch it by IMAP protocol, otherwise do nothing - deamon will not do any request to mail servers
+  
   // IMAP host to connect to to read the email from garmin, recommended local server (postfix)
   // gMail IS NOT recommended cause after so many request there will be timeouts of connection
   // most propably it's because firewall blocks such amount of connections & also it is slower
@@ -29,15 +31,4 @@ module.exports = {
   // httpPort: 8200,
   // waitForId: 300,
   // maxWaitForSession: 3, // use lower values for localhost thant external mail server which require more time to check inbox
-
-  // in HA cause default update every 1 minute - token from email will be updated every X minutes to prevent connection hammering also
-  // updateMailPerRequest: 5,
-
-  // this parameter is used for update session data - only every X minutes when session is finished (but ongoing updates every minute)
-  // updateDataPerRequest: 360,
-
-  // Getting session id/token will be executed on 1 and every {updateMailPerRequest} request.
-  // Getting session data will be executed on 1 and every {updateDataPerRequest} request or if service detect new session Id (different from old)
-  // For request like e.g. 2-4 request (for email) or 2-359 request (for data) cache will be used instead fetch request (only for finished activity)
-
 };
