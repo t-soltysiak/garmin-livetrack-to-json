@@ -2,11 +2,11 @@ module.exports = {
   secretPath: 'b50ff165-effa-45d6-b24b-6ff06a03e846', // generate some different e. g. UUID v4 to protect privacy of URL endpoint at least a little
 
   // Mail credentials
-  username: 'email_account', // usualy without domain (in gmail ussually with ;)
+  username: 'email_account', // usualy without domain, propably best way is to create new local, email account only for this purpose and then in Garmin Connect add email as another LiveTrack contact
   password: 'your_password',
-  host: 'domain.com', // same as host with SSL cert
-  account: 'ha', // If specified which is recommended, instead of checking email every minute which will propably be blocked by mail server, watch local server file in /var/mail/{account} filesize
+  localUser: true, // If true which is recommended, instead of checking email every minute which will propably be blocked by mail server, watch local server file in /var/mail/{username} filesize
   // If file size of this file will be greater than zero it means propably new email arrived - than fetch it by IMAP protocol, otherwise do nothing - deamon will not do any request to mail servers
+  host: 'domain.com', // same as host with SSL cert
   
   // IMAP host to connect to to read the email from garmin, recommended local server (postfix)
   // gMail IS NOT recommended cause after so many request there will be timeouts of connection
