@@ -82,7 +82,7 @@ const requestListener = async (req, res) => {
     log.info(`Checking ${config.mailDir} modification date`);
     const todayDate = new Date().toISOString().slice(0, 10);
     const mailDirDate = fs.statSync(config.mailDir).mtime.toISOString().slice(0, 10);
-    log.info(`Comparing date ${mailDirDate} with ${todayDate}`);
+    log.info(`Comparing date ${mailDirDate} with today ${todayDate}`);
     if (!config.localUser || config.localUser && mailDirDate === todayDate) {
       log.info('Checking email for new session');
       try {
