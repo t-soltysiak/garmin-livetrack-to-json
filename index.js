@@ -61,12 +61,13 @@ const fetchData = async (id, res) => {
   if (fetchedData) {
     log.info('Data is fetched. Activity status check');
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
+    log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING');
+    res.write(JSON.stringify(sessionData));
   } else {
-    log.info('Data is not fetched or empty:');
+    log.info('Data is empty so empty response');
     log.info(sessionData);
+    res.write('{}');
   }
-  log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING, update every minute');
-  if (fetchedData) res.write(JSON.stringify(sessionData)); else res.write('{}');
   res.end();
   log.info('Waiting for next request...');
 };
