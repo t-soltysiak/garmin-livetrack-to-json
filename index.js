@@ -66,7 +66,11 @@ const fetchData = async (id, res) => {
     const addDataToSession = {
       "sessionUrl": url
     };
-    res.write(JSON.stringify(sessionData.push(addDataToSession)));
+    const combinedData = {
+      ...addDataToSession,
+      ...sessionData
+    }
+    res.write(JSON.stringify(combinedData));
   } else {
     log.info('Data is empty so empty response');
     log.info(sessionData);
