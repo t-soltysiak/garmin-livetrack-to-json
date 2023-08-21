@@ -149,9 +149,11 @@ const requestListener = async (req, res) => {
         res.end();
       }
     } else {
-      log.info('SessionFile ${sessionFile} not exists, no session yet');
-      res.write('{}');
-      res.end();
+      log.info(`SessionFile ${sessionFile} not exists, no session yet`);
+      if (res) {
+        res.write('{}');
+        res.end();
+      }
     }
   } else {
     res.end();
