@@ -128,9 +128,9 @@ const requestListener = async (req, res) => {
     if (fs.existsSync(sessionFile)) {
       log.info(`Getting session data from sessionFile ${sessionFile}`);
       try {
-        const sessionData = fs.readFileSync(sessionFile, { encoding: 'utf8', flag: 'r' });
-        const sessionDate = sessionData.split('|')[0];
-        const sessionId = sessionData.split('|')[1];
+        const sessionSave = fs.readFileSync(sessionFile, { encoding: 'utf8', flag: 'r' });
+        const sessionDate = sessionSave.split('|')[0];
+        const sessionId = sessionSave.split('|')[1];
         if (sessionDate === moment().format('L')) {
           log.info('Fetching data cause today session exist');
           try {
