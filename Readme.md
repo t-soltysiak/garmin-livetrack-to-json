@@ -99,11 +99,15 @@ template:
       state: "{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.heartRateBeatsPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}"
 ```
 
-3) Edit dashboard Yaml:
+3) Install by HACS this plugin https://github.com/iantrich/config-template-card for custom iframe (preview with map etc.) cause default webpage card does not support passing dynamic urls
+
+4) Edit dashboard Yaml:
 ```
-- type: conditional
+type: vertical-stack
+cards:
+  - type: conditional
     conditions:
-      - entity: sensor.garmin_livetrack
+      - entity: sensor.garmin_livetrack_data
         state: available
     card:
       type: entities
@@ -142,14 +146,20 @@ template:
         - entity: sensor.garmin_livetrack_datetime
           name: Czas aktualizacji
           icon: mdi:av-timer
-          - type: conditional
+  - type: conditional
     conditions:
       - entity: sensor.garmin_livetrack_data
         state: available
     card:
-      type: iframe
-      url: states.sensor.garmin_livetrack_url.attributes.sessionUrl
-      aspect_ratio: 100%
+      type: custom:config-template-card
+      variables:
+        URL: states['sensor.garmin_livetrack_url'].state
+      entities:
+        - sensor.garmin_livetrack_url
+      card:
+        type: iframe
+        url: ${URL}
+        aspect_ratio: 100%
 ```
 
 Above HA Conditional Card https://www.home-assistant.io/dashboards/conditional/ automatically will show when LiveTrack status is on going or recently finished.
