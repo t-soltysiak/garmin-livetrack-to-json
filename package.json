@@ -29,6 +29,7 @@
     "assign-deep": "^1.0.1",
     "imap": "^0.8.19",
     "mimelib": "^0.3.1",
+    "moment": "^2.29.4",
     "node-fetch": "^2.6.0",
     "signale": "^1.4.0"
   },
