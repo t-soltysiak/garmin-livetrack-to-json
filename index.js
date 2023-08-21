@@ -12,7 +12,7 @@ let config = {
   username: '',
   password: '',
   localUser: true,
-  mailDir: '/var/mail/',
+  mailDir: '',
 
   host: 'localhost',
   port: 993,

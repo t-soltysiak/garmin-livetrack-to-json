@@ -7,7 +7,7 @@ module.exports = {
   host: 'domain.com', // same as host with SSL cert
   
   // localUser: true, // default true and for true value instead of checking email every minute which will propably be blocked by mail server, watch local server file in {mailDir} date of modified
-  // mailDir: '/var/mail/', // standard directory of users mail text files, remember to add backslash on end
+  mailDir: '/home/email_account/Maildir/new/', // standard directory of users mail text files, remember to add backslash on end
 
   // If dir date of modification is equal to today date it means propably new email arrived - than fetch it by IMAP protocol, otherwise do nothing - deamon will not do any request to mail servers
 
