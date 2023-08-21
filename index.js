@@ -83,7 +83,7 @@ const requestListener = async (req, res) => {
     const mailDirModification = fs.statSync(config.mailDir).mtime;
     let diffMinutes = new Date().getTime() - mailDirModification.getTime();
     diffMinutes = Math.round(diffMinutes / 60000);
-    log.info(`Mail dir was modified ${mailDirModification} = ${diffMinutes} minutes ago`);
+    log.info(`Mail dir was modified ${mailDirModification.toISOString()} = ${diffMinutes} minutes ago`);
     if (!config.localUser || config.localUser && diffMinutes <= config.maxWaitForSession) {
       log.info('Checking email for new session');
       try {
