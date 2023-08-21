@@ -79,7 +79,8 @@ const requestListener = async (req, res) => {
   if (req.url === `/${config.secretPath}`) {
     log.info();
     log.info(`Request #${counter} from client to secret path`);
-    if (!config.localUser || config.localUser && fs.statSync(`${config.mailDir}${config.username}`).size > 0) {
+    log.info(fs.statSync(config.mailDir).mtime.getDate());
+    if (!config.localUser || config.localUser && fs.statSync(config.mailDir).mtime.getDate() > 0) {
       log.info('Checking email for new session');
       try {
         mail.connect();
@@ -112,7 +113,7 @@ const requestListener = async (req, res) => {
       }, config.waitForId);
       counter++;
     } else {
-      log.info('Empty mail file - no need to connect');
+      log.info('Not modified mail dir - no need to connect');
       res.write('{}');
       res.end();
     }
