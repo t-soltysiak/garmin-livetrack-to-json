@@ -131,22 +131,22 @@ const requestListener = async (req, res) => {
         const sessionData = fs.readFileSync(sessionFile, { encoding: 'utf8', flag: 'r' });
         const sessionDate = sessionData.split('|')[0];
         const sessionId = sessionData.split('|')[1];
+        if (sessionDate === moment().format('L')) {
+          log.info('Fetching data cause today session exist');
+          try {
+            fetchData(sessionId, res);
+          } catch (err) {
+            log.error(err);
+            return;
+          }
+        } else {
+          log.info('Not fetching data cause there is no today session');
+          res.write('{}');
+          res.end();
+        }
       } catch (err) {
         log.error(err);
         return;
-      }
-      if (sessionDate === moment().format('L')) {
-        log.info('Fetching data cause today session exist');
-        try {
-          fetchData(sessionId, res);
-        } catch (err) {
-          log.error(err);
-          return;
-        }
-      } else {
-        log.info('Not fetching data cause there is no today session');
-        res.write('{}');
-        res.end();
       }
     } else {
       log.info(`SessionFile ${sessionFile} not exists, no session yet`);
