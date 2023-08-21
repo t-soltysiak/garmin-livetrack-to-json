@@ -113,6 +113,8 @@ const requestListener = async (req, res) => {
       counter++;
     } else {
       log.info('Empty mail file - no need to connect');
+      res.write('{}');
+      res.end();
     }
   } else {
     res.end();
