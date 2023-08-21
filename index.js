@@ -75,18 +75,12 @@ let finished = false;
 let fetchedData = false;
 let sessionData = undefined;
 
-const diffMinutes = (dt2, dt1) => {
-  let diff =(dt2.getTime() - dt1.getTime()) / 1000;
-  diff /= 60;
-  return Math.abs(Math.round(diff));
-}
-
 const requestListener = async (req, res) => {
   if (req.url === `/${config.secretPath}`) {
     log.info();
     log.info(`Request #${counter} from client to secret path`);
     log.info(`Checking ${config.mailDir} modification date`);
-    const diffMinutes = diffMinutes(new Date(), fs.statSync(config.mailDir).mtime);
+    const diffMinutes = Math.abs(Math.round(new Date() - fs.statSync(config.mailDir).mtime / 1000 / 60));
     log.info(`Mail dir was modified ${diffMinutes} minutes ago`);
     if (!config.localUser || config.localUser && diffMinutes <= config.maxWaitForSession) {
       log.info('Checking email for new session');
