@@ -125,25 +125,31 @@ const requestListener = async (req, res) => {
       res.write('{}');
       res.end();
     }
-    log.info(`Getting session data from sessionFile ${sessionFile}`);
-    try {
-      const sessionData = fs.readFileSync(sessionFile);
-      const sessionDate = sessionData.split('|')[0];
-      const sessionId = sessionData.split('|')[1];
-    } catch (err) {
-      log.error(err);
-      return;
-    }
-    if (sessionDate === moment().format('L')) {
-      log.info('Fetching data cause today session exist');
+    if (fs.existsSync(sessionFile)) {
+      log.info(`Getting session data from sessionFile ${sessionFile}`);
       try {
-        fetchData(sessionId, res);
+        const sessionData = fs.readFileSync(sessionFile);
+        const sessionDate = sessionData.split('|')[0];
+        const sessionId = sessionData.split('|')[1];
       } catch (err) {
         log.error(err);
         return;
       }
+      if (sessionDate === moment().format('L')) {
+        log.info('Fetching data cause today session exist');
+        try {
+          fetchData(sessionId, res);
+        } catch (err) {
+          log.error(err);
+          return;
+        }
+      } else {
+        log.info('Not fetching data cause there is no today session');
+        res.write('{}');
+        res.end();
+      }
     } else {
-      log.info('Not fetching data cause there is no today session');
+      log.info('SessionFile ${sessionFile} not exists, no session yet');
       res.write('{}');
       res.end();
     }
