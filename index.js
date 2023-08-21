@@ -12,6 +12,7 @@ let config = {
   username: '',
   password: '',
   localUser: true,
+  mailDir: '/var/mail/',
 
   host: 'localhost',
   port: 993,
@@ -78,7 +79,7 @@ const requestListener = async (req, res) => {
   if (req.url === `/${config.secretPath}`) {
     log.info();
     log.info(`Request #${counter} from client`);
-    if (!config.localUser || config.localUser && fs.statSync(`/var/mail${config.username}`).size > 0) {
+    if (!config.localUser || config.localUser && fs.statSync(`${config.mailDir}${config.username}`).size > 0) {
       log.info('Checking email for new session');
       try {
         mail.connect();
