@@ -7,6 +7,7 @@ const fs = require("fs");
 const moment = require('moment');
 
 const VERSION = require('./package.json').version
+const sessionFile = 'session.txt';
 
 let config = {
   secretPath: 'b50ff165-effa-45d6-b24b-6ff06a03e846',
@@ -71,7 +72,6 @@ const fetchData = async (id, res) => {
 };
 
 const mail = new Mail(config);
-let counter = 1;
 let finished = false;
 let fetchedData = false;
 let sessionData = undefined;
@@ -79,7 +79,7 @@ let sessionData = undefined;
 const requestListener = async (req, res) => {
   if (req.url === `/${config.secretPath}`) {
     log.info();
-    log.info(`Request #${counter} from client to secret path`);
+    log.info(`Request from client to secret path`);
     log.info(`Checking ${config.mailDir} modification date`);
     const mailDirModifTime = fs.statSync(config.mailDir).mtime;
     const diffMinutes = Math.round(moment.duration(moment().diff(mailDirModifTime)).asMinutes());
@@ -110,14 +110,40 @@ const requestListener = async (req, res) => {
           }
         } else {
           clearInterval(timer);
-          log.info('Found Garmin session, fetching data');
-          fetchData(mail.sessionInfo.Id, res);
+          log.info('Found Garmin session, saving to file');
+          try {
+            fs.writeFileSync(sessionFile, `${moment().format('L')}|${mail.sessionInfo.Id}`);
+          } catch (err) {
+            log.error(err);
+            return;
+          }   
           return;
         };
       }, config.waitForId);
-      counter++;
-    } else {
+    } else {    
       log.info('Not modified mail dir - no need to connect');
+      res.write('{}');
+      res.end();
+    }
+    log.info(`Getting session data from sessionFile ${sessionFile}`);
+    try {
+      const sessionData = fs.readFileSync(sessionFile);
+      const sessionDate = sessionData.split('|')[0];
+      const sessionId = sessionData.split('|')[1];
+    } catch (err) {
+      log.error(err);
+      return;
+    }
+    if (sessionDate === moment().format('L')) {
+      log.info('Fetching data cause today session exist');
+      try {
+        fetchData(sessionId, res);
+      } catch (err) {
+        log.error(err);
+        return;
+      }
+    } else {
+      log.info('Not fetching data cause there is no today session');
       res.write('{}');
       res.end();
     }
