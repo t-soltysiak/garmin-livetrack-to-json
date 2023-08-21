@@ -112,7 +112,7 @@ const requestListener = async (req, res) => {
       }, config.waitForId);
       counter++;
     } else {
-      log.info('Empty mail file - no need to imap connect');
+      log.info('Empty mail file, no need to do connect');
     }
   } else {
     res.end();
