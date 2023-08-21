@@ -67,7 +67,7 @@ const fetchData = async (id, res) => {
   } else {
     log.info('Data is empty so empty response');
     log.info(sessionData);
-    res.write('{1}');
+    res.write('{}');
   }
   res.end();
   log.info('Waiting for next request...');
@@ -109,7 +109,7 @@ const requestListener = async (req, res) => {
             waitCount = 0;
             clearInterval(timer);
             log.info('Waiting for next request...');
-            res.write('{2}');
+            res.write('{}');
             res.end();
             return;
           }
@@ -144,7 +144,7 @@ const requestListener = async (req, res) => {
           }
         } else {
           log.info('Not fetching data cause there is no today session');
-          res.write('{4}');
+          res.write('{}');
           res.end();
         }
       } catch (err) {
