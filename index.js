@@ -80,7 +80,7 @@ const requestListener = async (req, res) => {
     log.info();
     log.info(`Request #${counter} from client to secret path`);
     log.info(`Checking ${config.mailDir} modification date`);
-    let diffMinutes = new Date().getTime() - fs.statSync(config.mailDir).mtime.getTime() / 1000;
+    let diffMinutes = new Date().now().getTime() - fs.statSync(config.mailDir).mtime.getTime() / 1000;
     diffMinutes /= 60;
     diffMinutes = Math.abs(Math.round(diffMinutes));
     log.info(`Mail dir was modified ${diffMinutes} minutes ago`);
