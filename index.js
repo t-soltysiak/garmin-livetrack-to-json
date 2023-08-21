@@ -39,7 +39,7 @@ try {
   log.warn("You should create an config.js file based on the config.template.js template to overwrite the default values")
 }
 
-const fetchData = async (id, res) => {
+const fetchData = async (id, token, res) => {
   const url = `https://livetrack.garmin.com/services/session/${id}/trackpoints?requestTime=${Date.now()}`;
   log.info(`Fetching ${url}`);
   const response = await fetch(url);
@@ -63,14 +63,13 @@ const fetchData = async (id, res) => {
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
     log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING');
     log.info('Writing session data as response');
-    const addDataToSession = {
-      "sessionUrl": url
-    };
-    const combinedData = {
-      ...addDataToSession,
+    const sessionDataWithUrl = {
+      ...{
+        "sessionUrl": `https://livetrack.garmin.com/session/${id}/token/${token}`
+      },
       ...sessionData
     }
-    res.write(JSON.stringify(combinedData));
+    res.write(JSON.stringify(sessionDataWithUrl));
   } else {
     log.info('Data is empty so empty response');
     log.info(sessionData);
@@ -124,7 +123,7 @@ const requestListener = async (req, res) => {
           clearInterval(timer);
           log.info('Found Garmin session, saving to file');
           try {
-            fs.writeFileSync(sessionFile, `${moment().format('L')}|${mail.sessionInfo.Id}`);
+            fs.writeFileSync(sessionFile, `${moment().format('L')}|${mail.sessionInfo.Id}|${mail.sessionInfo.Token}`);
           } catch (err) {
             log.error(err);
             return;
@@ -141,10 +140,11 @@ const requestListener = async (req, res) => {
         const sessionSave = fs.readFileSync(sessionFile, { encoding: 'utf8', flag: 'r' });
         const sessionDate = sessionSave.split('|')[0];
         const sessionId = sessionSave.split('|')[1];
+        const sessionToken = sessionSave.split('|')[2];
         if (sessionDate === moment().format('L')) {
           log.info('Fetching data cause today session exist');
           try {
-            fetchData(sessionId, res);
+            fetchData(sessionId, sessionToken, res);
           } catch (err) {
             log.error(err);
             return;

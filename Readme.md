@@ -53,9 +53,9 @@ sensor:
       - powerWatts
       - speed
   - platform: rest
-    resource: http://127.0.0.1:8200/b50ff165-effa-45d6-b24b-6ff06a03e846
+    resource: http://127.0.0.1:8200/e20b7e03-01ed-4cd4-8f99-330a3d943ded
     name: Garmin LiveTrack URL
-    value_template: "{{ value_json.sessionUrl }}"
+    value_template: "{% if value_json is defined %}{{ value_json.sessionUrl }}{% endif %}"
     headers:
       Content-Type: application/json
 
