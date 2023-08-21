@@ -136,6 +136,14 @@ template:
         - entity: sensor.garmin_livetrack_datetime
           name: Czas aktualizacji
           icon: mdi:av-timer
+          - type: conditional
+    conditions:
+      - entity: sensor.garmin_livetrack_data
+        state: available
+    card:
+      type: iframe
+      url: states.sensor.garmin_livetrack.attributes.sessionUrl
+      aspect_ratio: 100%
 ```
 
 Above HA Conditional Card https://www.home-assistant.io/dashboards/conditional/ automatically will show when LiveTrack status is on going or recently finished.

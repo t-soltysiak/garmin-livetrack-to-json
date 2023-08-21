@@ -63,7 +63,10 @@ const fetchData = async (id, res) => {
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
     log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING');
     log.info('Writing session data as response');
-    res.write(JSON.stringify(sessionData));
+    const addDataToSession = {
+      "sessionUrl": url
+    };
+    res.write(JSON.stringify(sessionData.push(addDataToSession)));
   } else {
     log.info('Data is empty so empty response');
     log.info(sessionData);
