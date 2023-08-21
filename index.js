@@ -79,9 +79,11 @@ const requestListener = async (req, res) => {
   if (req.url === `/${config.secretPath}`) {
     log.info();
     log.info(`Request #${counter} from client to secret path`);
-    log.info(`Checking mail dir = ${config.mailDir} modification date`);
-    log.info(fs.statSync(config.mailDir).mtime.getDate());
-    if (!config.localUser || config.localUser && fs.statSync(config.mailDir).mtime.getDate() > 0) {
+    log.info(`Checking ${config.mailDir} modification date`);
+    const todayDate = new Date().toISOString().slice(0, 10);
+    const mailDirDate = fs.statSync(config.mailDir).mtime.toISOString().slice(0, 10);
+    log.info(`Comparing date ${mailDirDate} with ${todayDate}`);
+    if (!config.localUser || config.localUser && mailDirDate === todayDate) {
       log.info('Checking email for new session');
       try {
         mail.connect();
