@@ -52,6 +52,12 @@ sensor:
       - fitnessPointData
       - powerWatts
       - speed
+  - platform: rest
+    resource: http://127.0.0.1:8200/b50ff165-effa-45d6-b24b-6ff06a03e846
+    name: Garmin LiveTrack URL
+    value_template: "{{ value_json.sessionUrl }}"
+    headers:
+      Content-Type: application/json
 
 template:
   - sensor:
@@ -142,7 +148,7 @@ template:
         state: available
     card:
       type: iframe
-      url: states.sensor.garmin_livetrack.attributes.sessionUrl
+      url: states.sensor.garmin_livetrack_url.attributes.sessionUrl
       aspect_ratio: 100%
 ```
 
