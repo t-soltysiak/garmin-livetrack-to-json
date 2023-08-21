@@ -78,7 +78,7 @@ let sessionData = undefined;
 const requestListener = async (req, res) => {
   if (req.url === `/${config.secretPath}`) {
     log.info();
-    log.info(`Request #${counter} from client`);
+    log.info(`Request #${counter} from client to secret path`);
     if (!config.localUser || config.localUser && fs.statSync(`${config.mailDir}${config.username}`).size > 0) {
       log.info('Checking email for new session');
       try {
@@ -112,7 +112,7 @@ const requestListener = async (req, res) => {
       }, config.waitForId);
       counter++;
     } else {
-      log.info('Skipping imap connect, mail file is empty');
+      log.info('Empty mail file - no need to imap connect');
     }
   } else {
     res.end();
