@@ -128,7 +128,7 @@ const requestListener = async (req, res) => {
     if (fs.existsSync(sessionFile)) {
       log.info(`Getting session data from sessionFile ${sessionFile}`);
       try {
-        const sessionData = fs.readFileSync(sessionFile);
+        const sessionData = fs.readFileSync(sessionFile, { encoding: 'utf8', flag: 'r' });
         const sessionDate = sessionData.split('|')[0];
         const sessionId = sessionData.split('|')[1];
       } catch (err) {
