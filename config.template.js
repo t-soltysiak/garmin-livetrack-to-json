@@ -9,7 +9,7 @@ module.exports = {
   // localUser: true, // default true and for true value instead of checking email every minute which will propably be blocked by mail server, watch local server file in {mailDir} date of modified
   mailDir: '/home/email_account/Maildir/new/', // standard directory of users mail text files, remember to add backslash on end
 
-  // If dir date of modification is equal to today date it means propably new email arrived - than fetch it by IMAP protocol, otherwise do nothing - deamon will not do any request to mail servers
+  // If dir date of modification is less than minutes equal to maxWaitForSession it means propably new email arrived - than fetch it by IMAP, otherwise do there will be no request to mail servers
 
   // IMAP host to connect to to read the email from garmin, recommended local server (postfix)
   // gMail IS NOT recommended cause after so many request there will be timeouts of connection
