@@ -80,10 +80,10 @@ const requestListener = async (req, res) => {
     log.info();
     log.info(`Request #${counter} from client to secret path`);
     log.info(`Checking ${config.mailDir} modification date`);
-    let diffMinutes = new Date().now().getTime() - fs.statSync(config.mailDir).mtime.getTime() / 1000;
-    diffMinutes /= 60;
-    diffMinutes = Math.abs(Math.round(diffMinutes));
-    log.info(`Mail dir was modified ${diffMinutes} minutes ago`);
+    const mailDirModification = fs.statSync(config.mailDir).mtime;
+    let diffMinutes = mailDirModification.getTime() - new Date().getTime();
+    diffMinutes = Math.round(diffMinutes / 60000);
+    log.info(`Mail dir was modified ${mailDirModification} = ${diffMinutes} minutes ago`);
     if (!config.localUser || config.localUser && diffMinutes <= config.maxWaitForSession) {
       log.info('Checking email for new session');
       try {
