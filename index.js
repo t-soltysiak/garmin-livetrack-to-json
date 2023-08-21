@@ -62,6 +62,7 @@ const fetchData = async (id, res) => {
     log.info('Data is fetched. Activity status check');
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
     log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING');
+    log.info('Writing session data as response');
     res.write(JSON.stringify(sessionData));
   } else {
     log.info('Data is empty so empty response');
@@ -80,6 +81,9 @@ let sessionData = undefined;
 const requestListener = async (req, res) => {
   if (req.url === `/${config.secretPath}`) {
     log.info();
+    if (!res) {
+      log.error('Passed empty response to listener');
+    }
     log.info(`Request from client to secret path`);
     log.info(`Checking ${config.mailDir} modification date`);
     const mailDirModifTime = fs.statSync(config.mailDir).mtime;
