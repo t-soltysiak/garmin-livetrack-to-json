@@ -4,6 +4,8 @@ FORKED FROM: https://github.com/Novex/garmin-livetrack-obs
 
 Automatically search for the Garmin Livetrack email in your inbox and output fields from the API to JSON http response e. g. to use in Home Assistant sensors.
 
+<img width="373" alt="Zrzut ekranu 2023-08-21 o 21 23 01" src="https://github.com/t-soltysiak/garmin-livetrack-to-json/assets/68973012/299639bb-f004-4720-958b-1e965f035b1e">
+
 ## Usage
 1. Clone/[download] this repo
 2. Copy the `config.template.js` file to `config.js` and fill in your email address and password
@@ -164,5 +166,3 @@ cards:
 
 Above HA Conditional Card https://www.home-assistant.io/dashboards/conditional/ automatically will show when LiveTrack status is on going or recently finished.
 If not data is fetched from Garmin servers (see logs e. g. with systemctl status garmin -n 50) card will be not visible to not take up space on the dashboards.
-
-<img width="498" alt="Zrzut ekranu 2023-08-2 o 12 38 04" src="https://github.com/t-soltysiak/garmin-livetrack-to-json/assets/68973012/5ee7ca73-e9df-4d11-b975-d5acdec50fb8">
