@@ -67,7 +67,7 @@ const fetchData = async (id, res) => {
   } else {
     log.info('Data is empty so empty response');
     log.info(sessionData);
-    res.write('{}');
+    res.write('{1}');
   }
   res.end();
   log.info('Waiting for next request...');
@@ -109,7 +109,7 @@ const requestListener = async (req, res) => {
             waitCount = 0;
             clearInterval(timer);
             log.info('Waiting for next request...');
-            res.write('{}');
+            res.write('{2}');
             res.end();
             return;
           }
@@ -127,7 +127,7 @@ const requestListener = async (req, res) => {
       }, config.waitForId);
     } else {    
       log.info('Not modified mail dir - no need to connect');
-      res.write('{}');
+      res.write('{3}');
       res.end();
     }
     if (fs.existsSync(sessionFile)) {
@@ -146,7 +146,7 @@ const requestListener = async (req, res) => {
           }
         } else {
           log.info('Not fetching data cause there is no today session');
-          res.write('{}');
+          res.write('{4}');
           res.end();
         }
       } catch (err) {
