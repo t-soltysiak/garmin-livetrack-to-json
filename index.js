@@ -132,7 +132,7 @@ const requestListener = async (req, res) => {
         };
       }, config.waitForId);
     } else {    
-      log.info('Not modified mail dir - no need to connect');
+      log.info('Today there is no new mail so no need to connect');
     }
     if (fs.existsSync(sessionFile)) {
       log.info(`Getting session data from sessionFile ${sessionFile}`);
