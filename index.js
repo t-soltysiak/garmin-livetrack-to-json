@@ -90,7 +90,7 @@ const requestListener = async (req, res) => {
     if (!res) {
       log.error('Passed empty response to listener');
     }
-    log.info(`Request from client to secret path`);
+    log.info(`Request from client to valid secret url path`);
     log.info(`Checking ${config.mailDir} modification date`);
     const mailDirModifTime = fs.statSync(config.mailDir).mtime;
     const diffMinutes = Math.round(moment.duration(moment().diff(mailDirModifTime)).asMinutes());
