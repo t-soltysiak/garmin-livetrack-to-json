@@ -41,7 +41,7 @@ sensor:
   - platform: rest
     resource: http://127.0.0.1:8200/b50ff165-effa-45d6-b24b-6ff06a03e846
     name: Garmin LiveTrack
-    value_template: "{{ value_json.trackPoints[-1].dateTime if 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 }}"
+    value_template: "{% if value_json is defined %}{{ value_json.trackPoints[-1].dateTime if 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 }}{% endif %}"
     headers:
       Content-Type: application/json
     json_attributes_path: "$.trackPoints[-1:]"
