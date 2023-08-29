@@ -57,7 +57,7 @@ sensor:
   - platform: rest
     resource: http://127.0.0.1:8200/e20b7e03-01ed-4cd4-8f99-330a3d943ded
     name: Garmin LiveTrack URL
-    value_template: "{% if value_json is defined %}{{ value_json.sessionUrl }}{% endif %}"
+    value_template: "{% if 'sessionUrl' in value_json %}{{ value_json.sessionUrl }}{% endif %}"
     headers:
       Content-Type: application/json
 
