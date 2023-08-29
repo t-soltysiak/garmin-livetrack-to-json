@@ -65,40 +65,40 @@ template:
   - sensor:
     - name: Garmin LiveTrack - data
       unique_id: garmin_livetrack_data
-      state: "{% if states.sensor.garmin_livetrack%}{{ 'available' if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ 'available' if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - created time
       unique_id: garmin_livetrack_created_time
-      state: "{% if states.sensor.garmin_livetrack%}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.activityCreatedTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.activityCreatedTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - activity
       unique_id: garmin_livetrack_activity
-      state: "{% if states.sensor.garmin_livetrack%}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.activityType if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes ) | lower }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.activityType if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes ) | lower }}{% endif %}"
     - name: Garmin LiveTrack - duration
       unique_id: garmin_livetrack_duration
-      state: "{% if states.sensor.garmin_livetrack%}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.totalDurationSecs | timestamp_custom('%H:%M:%S', false) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.totalDurationSecs | timestamp_custom('%H:%M:%S', false) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - dateTime
       unique_id: garmin_livetrack_dateTime
-      state: "{% if states.sensor.garmin_livetrack%}{{ states.sensor.garmin_livetrack.attributes.dateTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') if 'dateTime' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.dateTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') if 'dateTime' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - finished
       unique_id: garmin_livetrack_finished
-      state: "{% if states.sensor.garmin_livetrack%}{{ ('finished' if states.sensor.garmin_livetrack.attributes.fitnessPointData.eventTypes[1] == 'END' else 'ONGOING!') if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ ('finished' if states.sensor.garmin_livetrack.attributes.fitnessPointData.eventTypes[1] == 'END' else 'ONGOING!') if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - distance
       unique_id: garmin_livetrack_distance
-      state: "{% if states.sensor.garmin_livetrack%}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.distanceMeters | int(0) )/1000 | round(1) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.distanceMeters | int(0) )/1000 | round(1) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - altitude
       unique_id: garmin_livetrack_altitude
-      state: "{% if states.sensor.garmin_livetrack%}{{ states.sensor.garmin_livetrack.attributes.altitude if 'altitude' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.altitude if 'altitude' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - speed
       unique_id: garmin_livetrack_speed
-      state: "{% if states.sensor.garmin_livetrack%}{{ (states.sensor.garmin_livetrack.attributes.speed)*3.6 if 'speed' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.speed)*3.6 if 'speed' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - cadence
       unique_id: garmin_livetrack_cadence
-      state: "{% if states.sensor.garmin_livetrack%}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.cadenceCyclesPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.cadenceCyclesPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - power watts
       unique_id: garmin_livetrack_powerwatts
-      state: "{% if states.sensor.garmin_livetrack%}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.powerWatts if 'powerWatts' in states.sensor.garmin_livetrack.attributes.fitnessPointData) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.powerWatts if 'powerWatts' in states.sensor.garmin_livetrack.attributes.fitnessPointData) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - heart beats
       unique_id: garmin_livetrack_heartbeats
-      state: "{% if states.sensor.garmin_livetrack%}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.heartRateBeatsPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.heartRateBeatsPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
 ```
 
 3) Install by HACS this plugin https://github.com/iantrich/config-template-card for custom iframe (preview with map etc.) cause default webpage card does not support passing dynamic urls
