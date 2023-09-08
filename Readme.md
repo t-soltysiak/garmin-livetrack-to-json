@@ -83,13 +83,13 @@ template:
       state: "{% if states.sensor.garmin_livetrack is defined %}{{ ('finished' if states.sensor.garmin_livetrack.attributes.fitnessPointData.eventTypes[1] == 'END' else 'ONGOING!') if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - distance
       unique_id: garmin_livetrack_distance
-      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.distanceMeters | int(0) )/1000 | round(1) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.distanceMeters | int(0) )/1000 | round(2) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - altitude
       unique_id: garmin_livetrack_altitude
-      state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.altitude if 'altitude' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.altitude | round(0) if 'altitude' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - speed
       unique_id: garmin_livetrack_speed
-      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.speed)*3.6 if 'speed' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.speed)*3.6 | round(1) if 'speed' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - cadence
       unique_id: garmin_livetrack_cadence
       state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.cadenceCyclesPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
