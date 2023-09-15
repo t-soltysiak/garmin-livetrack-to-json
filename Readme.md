@@ -83,21 +83,27 @@ template:
       state: "{% if states.sensor.garmin_livetrack is defined %}{{ ('finished' if states.sensor.garmin_livetrack.attributes.fitnessPointData.eventTypes[1] == 'END' else 'ONGOING!') if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - distance
       unique_id: garmin_livetrack_distance
-      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.distanceMeters | int(0) )/1000 | round(2) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      unit_of_measurement: "km"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ ((states.sensor.garmin_livetrack.attributes.fitnessPointData.distanceMeters | int(0))/1000) | round(2) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - altitude
       unique_id: garmin_livetrack_altitude
+      unit_of_measurement: "m n.p.m."
       state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.altitude | round(0) if 'altitude' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - speed
       unique_id: garmin_livetrack_speed
-      state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.speed)*3.6 | round(1) if 'speed' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
+      unit_of_measurement: "km/h"
+      state: "{% if states.sensor.garmin_livetrack is defined %}{{ ((states.sensor.garmin_livetrack.attributes.speed)*3.6) | round(1) if 'speed' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - cadence
       unique_id: garmin_livetrack_cadence
+      unit_of_measurement: "rpm"
       state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.cadenceCyclesPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - power watts
       unique_id: garmin_livetrack_powerwatts
+      unit_of_measurement: "W"
       state: "{% if states.sensor.garmin_livetrack is defined %}{{ (states.sensor.garmin_livetrack.attributes.fitnessPointData.powerWatts if 'powerWatts' in states.sensor.garmin_livetrack.attributes.fitnessPointData) if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
     - name: Garmin LiveTrack - heart beats
       unique_id: garmin_livetrack_heartbeats
+      unit_of_measurement: "bpm"
       state: "{% if states.sensor.garmin_livetrack is defined %}{{ states.sensor.garmin_livetrack.attributes.fitnessPointData.heartRateBeatsPerMin if 'fitnessPointData' in states.sensor.garmin_livetrack.attributes }}{% endif %}"
 ```
 
@@ -128,22 +134,22 @@ cards:
           name: Czas trwania
           icon: mdi:av-timer
         - entity: sensor.garmin_livetrack_distance
-          name: Dystans w km
+          name: Dystans
           icon: mdi:arrow-up-down-bold
         - entity: sensor.garmin_livetrack_altitude
-          name: Wysokość w m n.p.m.
+          name: Wysokość
           icon: mdi:altimeter
         - entity: sensor.garmin_livetrack_speed
-          name: Prędkość w km/h
+          name: Prędkość
           icon: mdi:speedometer
         - entity: sensor.garmin_livetrack_cadence
-          name: Kadencja w obr./min.
+          name: Kadencja
           icon: mdi:reload
         - entity: sensor.garmin_livetrack_power_watts
-          name: Pomiar mocy w watach
+          name: Moc
           icon: mdi:shoe-cleat
         - entity: sensor.garmin_livetrack_heart_beats
-          name: Tętno - uderzeń/min.
+          name: Tętno
           icon: mdi:heart-multiple
         - entity: sensor.garmin_livetrack_datetime
           name: Czas aktualizacji
