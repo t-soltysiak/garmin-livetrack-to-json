@@ -37,74 +37,41 @@ systemctl enable --now garmin
 
 2) Edit configuration.yaml in HA - remember to update secretPath protection in resource url:
 ```
-sensor:
-  - platform: rest
-    resource: http://127.0.0.1:8200/b50ff165-effa-45d6-b24b-6ff06a03e846
-    name: Garmin LiveTrack
-    value_template: "{% if value_json is defined %}{{ value_json.trackPoints[-1].dateTime if 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 }}{% endif %}"
-    headers:
-      Content-Type: application/json
-    json_attributes_path: "$.trackPoints[-1:]"
-    json_attributes:
-      - altitude
-      - cadenceCyclesPerMin
-      - dateTime
-      - distanceMeters
-      - heartRateBeatsPerMin
-      - fitnessPointData
-      - powerWatts
-      - speed
-  - platform: rest
-    resource: http://127.0.0.1:8200/e20b7e03-01ed-4cd4-8f99-330a3d943ded
-    name: Garmin LiveTrack URL
-    value_template: "{% if 'sessionUrl' in value_json %}{{ value_json.sessionUrl }}{% endif %}"
-    headers:
-      Content-Type: application/json
-
-template:
-  - sensor:
-    - name: Garmin LiveTrack - data
-      unique_id: garmin_livetrack_data
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None %}available{% endif %}"
-    - name: Garmin LiveTrack - created time
-      unique_id: garmin_livetrack_created_time
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None and state_attr('sensor.garmin_livetrack','fitnessPointData').activityCreatedTime is defined and state_attr('sensor.garmin_livetrack','fitnessPointData').activityCreatedTime != none %}{{ state_attr('sensor.garmin_livetrack','fitnessPointData').activityCreatedTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
-    - name: Garmin LiveTrack - activity
-      unique_id: garmin_livetrack_activity
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None and state_attr('sensor.garmin_livetrack','fitnessPointData').activityType is defined and state_attr('sensor.garmin_livetrack','fitnessPointData').activityType != none %}{{ state_attr('sensor.garmin_livetrack','fitnessPointData').activityType | lower }}{% endif %}"
-    - name: Garmin LiveTrack - duration
-      unique_id: garmin_livetrack_duration
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None and state_attr('sensor.garmin_livetrack','fitnessPointData').totalDurationSecs is defined and state_attr('sensor.garmin_livetrack','fitnessPointData').totalDurationSecs != none %}{{ state_attr('sensor.garmin_livetrack','fitnessPointData').totalDurationSecs | timestamp_custom('%H:%M:%S', false) }}{% endif %}"
-    - name: Garmin LiveTrack - dateTime
-      unique_id: garmin_livetrack_dateTime
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','dateTime') != None and state_attr('sensor.garmin_livetrack','dateTime') != none %}{{ state_attr('sensor.garmin_livetrack','dateTime') | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
-    - name: Garmin LiveTrack - finished
-      unique_id: garmin_livetrack_finished
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None and state_attr('sensor.garmin_livetrack','fitnessPointData').eventTypes is defined and state_attr('sensor.garmin_livetrack','fitnessPointData').eventTypes != none %}{{ ('finished' if 'END' in state_attr('sensor.garmin_livetrack','fitnessPointData').eventTypes else 'ONGOING!') }}{% endif %}"
-    - name: Garmin LiveTrack - distance
-      unique_id: garmin_livetrack_distance
-      unit_of_measurement: "km"
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None and state_attr('sensor.garmin_livetrack','distanceMeters') is defined and state_attr('sensor.garmin_livetrack','distanceMeters') != none %}{{ ((state_attr('sensor.garmin_livetrack','fitnessPointData').distanceMeters | int(0))/1000) | round(2) }}{% endif %}"
-    - name: Garmin LiveTrack - altitude
-      unique_id: garmin_livetrack_altitude
-      unit_of_measurement: "m n.p.m."
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','altitude') != None and state_attr('sensor.garmin_livetrack','altitude') != none %}{{ (state_attr('sensor.garmin_livetrack','altitude')) | round(0) }}{% endif %}"
-    - name: Garmin LiveTrack - speed
-      unique_id: garmin_livetrack_speed
-      unit_of_measurement: "km/h"
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','speed') != None and state_attr('sensor.garmin_livetrack','speed') != none %}{{ (state_attr('sensor.garmin_livetrack','speed') | float * 3.6) | round(1) }}{% endif %}"
-    - name: Garmin LiveTrack - cadence
-      unique_id: garmin_livetrack_cadence
-      unit_of_measurement: "rpm"
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None and state_attr('sensor.garmin_livetrack','fitnessPointData').cadenceCyclesPerMin is defined and state_attr('sensor.garmin_livetrack','fitnessPointData').cadenceCyclesPerMin != none %}{{ state_attr('sensor.garmin_livetrack','fitnessPointData').cadenceCyclesPerMin }}{% endif %}"
-    - name: Garmin LiveTrack - power watts
-      unique_id: garmin_livetrack_powerwatts
-      unit_of_measurement: "W"
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None and state_attr('sensor.garmin_livetrack','fitnessPointData').powerWatts is defined and state_attr('sensor.garmin_livetrack','fitnessPointData').powerWatts != none %}{{ state_attr('sensor.garmin_livetrack','fitnessPointData').powerWatts }}{% endif %}"
-    - name: Garmin LiveTrack - heart beats
-      unique_id: garmin_livetrack_heartbeats
-      unit_of_measurement: "bpm"
-      state: "{% if states('sensor.garmin_livetrack') is defined and state_attr('sensor.garmin_livetrack','fitnessPointData') != None and state_attr('sensor.garmin_livetrack','fitnessPointData').heartRateBeatsPerMin is defined and state_attr('sensor.garmin_livetrack','fitnessPointData').heartRateBeatsPerMin != none %}{{ state_attr('sensor.garmin_livetrack','fitnessPointData').heartRateBeatsPerMin }}{% endif %}"
+rest:
+  - resource: http://127.0.0.1:8200/b50ff165-effa-45d6-b24b-6ff06a03e846
+    sensor:
+      - name: Garmin LiveTrack data
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}available{% else %}not available{% endif %}"
+      - name: Garmin LiveTrack URL
+        value_template: "{% if value_json is defined and 'sessionUrl' in value_json %}{{ value_json.sessionUrl }}{% endif %}"
+      - name: Garmin LiveTrack created time
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ value_json.trackPoints[-1].fitnessPointData.activityCreatedTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
+      - name: Garmin LiveTrack activity type
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ value_json.trackPoints[-1].fitnessPointData.activityType | lower }}{% endif %}"
+      - name: Garmin LiveTrack duration
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ value_json.trackPoints[-1].fitnessPointData.totalDurationSecs | timestamp_custom('%H:%M:%S', false) }}{% endif %}"
+      - name: Garmin LiveTrack dateTime
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ value_json.trackPoints[-1].dateTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
+      - name: Garmin LiveTrack finished
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ ('finished' if 'END' in value_json.trackPoints.fitnessPointData.eventTypes else 'ONGOING!') }}{% endif %}"
+      - name: Garmin LiveTrack distance
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ ((value_json.trackPoints.fitnessPointData.distanceMeters | int(0))/1000) | round(2) }}{% endif %}"
+        unit_of_measurement: "km"
+      - name: Garmin LiveTrack altitude
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ (value_json.trackPoints.fitnessPointData.altitude) | round(0) }}{% endif %}"
+        unit_of_measurement: "m n.p.m."
+      - name: Garmin LiveTrack speed
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ ((value_json.trackPoints.fitnessPointData.speed) | float * 3.6) | round(1) }}{% endif %}"
+        unit_of_measurement: "km/h"
+      - name: Garmin LiveTrack cadence
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ value_json.trackPoints.fitnessPointData.cadenceCyclesPerMin }}{% endif %}"
+        unit_of_measurement: "rpm"
+      - name: Garmin LiveTrack power watts
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ value_json.trackPoints.fitnessPointData.powerWatts }}{% endif %}"
+        unit_of_measurement: "W"
+      - name: Garmin LiveTrack heart beats
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints %}{{ value_json.trackPoints.fitnessPointData.heartRateBeatsPerMin }}{% endif %}"
+        unit_of_measurement: "bpm"
 ```
 
 3) Install by HACS this plugin https://github.com/iantrich/config-template-card for custom iframe (preview with map etc.) cause default webpage card does not support passing dynamic urls
@@ -124,7 +91,7 @@ cards:
         - entity: sensor.garmin_livetrack_finished
           name: Status aktywności
           icon: mdi:progress-check
-        - entity: sensor.garmin_livetrack_activity
+        - entity: sensor.garmin_livetrack_activity_type
           name: Rodzaj aktywności
           icon: mdi:bike-fast
         - entity: sensor.garmin_livetrack_created_time
