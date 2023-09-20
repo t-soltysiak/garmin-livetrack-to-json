@@ -45,36 +45,36 @@ rest:
       - name: Garmin LiveTrack data
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 %}available{% else %}not available{% endif %}"
       - name: Garmin LiveTrack dateTime
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 %}{{ value_json.trackPoints[-1].dateTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'dateTime' in value_json.trackPoints[-1] %}{{ value_json.trackPoints[-1].dateTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
       - name: Garmin LiveTrack altitude
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 %}{{ (value_json.trackPoints[-1].altitude) | round(0) }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'altitude' in value_json.trackPoints[-1] %}{{ (value_json.trackPoints[-1].altitude) | round(0) }}{% endif %}"
         unit_of_measurement: "m n.p.m."
       - name: Garmin LiveTrack speed
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 %}{{ ((value_json.trackPoints[-1].speed) | float * 3.6) | round(1) }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'speed' in value_json.trackPoints[-1] %}{{ ((value_json.trackPoints[-1].speed) | float * 3.6) | round(1) }}{% endif %}"
         unit_of_measurement: "km/h"
       - name: Garmin LiveTrack position lat
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 %}{{ value_json.trackPoints[-1].position.lat }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'lat' in value_json.trackPoints[-1].position %}{{ value_json.trackPoints[-1].position.lat }}{% endif %}"
       - name: Garmin LiveTrack position lon
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 %}{{ value_json.trackPoints[-1].position.lon }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'lon' in value_json.trackPoints[-1].position %}{{ value_json.trackPoints[-1].position.lon }}{% endif %}"
       - name: Garmin LiveTrack created time
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] %}{{ value_json.trackPoints[-1].fitnessPointData.activityCreatedTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'activityCreatedTime' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.activityCreatedTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
       - name: Garmin LiveTrack finished
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] %}{{ ('finished' if 'END' in value_json.trackPoints[-1].fitnessPointData.eventTypes else 'ONGOING!') }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'eventTypes' in value_json.trackPoints[-1].fitnessPointData %}{{ ('finished' if 'END' in value_json.trackPoints[-1].fitnessPointData.eventTypes else 'ONGOING!') }}{% endif %}"
       - name: Garmin LiveTrack activity type
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] %}{{ value_json.trackPoints[-1].fitnessPointData.activityType | lower }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'activityType' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.activityType | lower }}{% endif %}"
       - name: Garmin LiveTrack duration
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] %}{{ value_json.trackPoints[-1].fitnessPointData.totalDurationSecs | timestamp_custom('%H:%M:%S', false) }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'totalDurationSecs' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.totalDurationSecs | timestamp_custom('%H:%M:%S', false) }}{% endif %}"
       - name: Garmin LiveTrack distance
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] %}{{ ((value_json.trackPoints[-1].fitnessPointData.distanceMeters | int(0))/1000) | round(2) }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'distanceMeters' in value_json.trackPoints[-1].fitnessPointData %}{{ ((value_json.trackPoints[-1].fitnessPointData.distanceMeters | int(0))/1000) | round(2) }}{% endif %}"
         unit_of_measurement: "km"
       - name: Garmin LiveTrack cadence
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] %}{{ value_json.trackPoints[-1].fitnessPointData.cadenceCyclesPerMin }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'cadenceCyclesPerMin' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.cadenceCyclesPerMin }}{% endif %}"
         unit_of_measurement: "rpm"
       - name: Garmin LiveTrack power watts
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] %}{{ value_json.trackPoints[-1].fitnessPointData.powerWatts }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'powerWatts' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.powerWatts }}{% endif %}"
         unit_of_measurement: "W"
       - name: Garmin LiveTrack heart beats
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] %}{{ value_json.trackPoints[-1].fitnessPointData.heartRateBeatsPerMin }}{% endif %}"
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'heartRateBeatsPerMin' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.heartRateBeatsPerMin }}{% endif %}"
         unit_of_measurement: "bpm"
 ```
 
