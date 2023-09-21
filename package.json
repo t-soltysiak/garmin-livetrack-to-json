@@ -1,6 +1,6 @@
 {
   "name": "garmin-livetrack-to-json",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Serve JSON response from a Garmin Livetrack email",
   "main": "index.js",
   "directories": {
