@@ -74,10 +74,11 @@ const fetchData = async (id, token, res) => {
     log.info('Latitude: '+lastPosition.lat+' Longitude:' + lastPosition.lon);
     const reverse = await geocoder.reverse({ lat: lastPosition.lat, lon: lastPosition.lon });
     log.info('Geocoder reverse: '+JSON.stringify(reverse));
+    const { city, streetName, streetNumber } = reverse[0];
     const sessionDataWithUrl = {
       ...{
         "sessionUrl": `https://livetrack.garmin.com/session/${id}/token/${token}`,
-        "positionAddress": `${reverse[0].city}, ${config.geocoderStreet} ${reverse[0].streetName} ${reverse[0].streetNumber}`,
+        "positionAddress": `${city}, ${config.geocoderStreet} ${streetName}${streetNumber && ` ${streetNumber}`}`,
       },
       ...sessionData
     }
