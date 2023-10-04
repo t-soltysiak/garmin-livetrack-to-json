@@ -30,6 +30,9 @@ let config = {
 
   httpHost: 'localhost',
   httpPort: 8200,
+
+  geocoderCity: 'miejscowość',
+  geocoderStreet: 'ulica'
 };
 
 const geocoder = NodeGeocoder({
@@ -75,7 +78,7 @@ const fetchData = async (id, token, res) => {
     const sessionDataWithUrl = {
       ...{
         "sessionUrl": `https://livetrack.garmin.com/session/${id}/token/${token}`,
-        "positionAddress": `${reverse[0].city}, ${reverse[0].streetName} ${reverse[0].streetNumber}`,
+        "positionAddress": `${config.geocoderCity}: ${reverse[0].city}, ${config.geocoderStreet}: ${reverse[0].streetName} ${reverse[0].streetNumber}`,
       },
       ...sessionData
     }
