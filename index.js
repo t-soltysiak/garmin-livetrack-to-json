@@ -5,6 +5,7 @@ const fetch = require('node-fetch');
 const assign = require('assign-deep');
 const fs = require("fs"); 
 const moment = require('moment');
+const NodeGeocoder = require('node-geocoder');
 
 const VERSION = require('./package.json').version
 const sessionFile = 'session.txt';
@@ -30,6 +31,11 @@ let config = {
   httpHost: 'localhost',
   httpPort: 8200,
 };
+
+const geocoder = NodeGeocoder({
+  provider: 'google',
+  fetch: customFetchImplementation,
+});
 
 log.info(`Starting garmin-livetrack-to-json v${VERSION}`);
 
@@ -62,13 +68,18 @@ const fetchData = async (id, token, res) => {
     log.info('Data is fetched. Activity status check');
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
     log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING');
-    log.info('Writing session data as response');
+    log.info('Getting last position reverse geocode address');
+    const lastPosition = sessionData.trackPoints[sessionData.trackPoints.length-1].position;
+    const res = await geocoder.reverse({ lat: position.lat, lon: position.lon });
+    log.info(res.address);
     const sessionDataWithUrl = {
       ...{
-        "sessionUrl": `https://livetrack.garmin.com/session/${id}/token/${token}`
+        "sessionUrl": `https://livetrack.garmin.com/session/${id}/token/${token}`,
+        "positionAddress": res.address
       },
       ...sessionData
     }
+    log.info('Writing session data as response');
     res.write(JSON.stringify(sessionDataWithUrl));
   } else {
     log.info('Data is empty so empty response');

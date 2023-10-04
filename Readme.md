@@ -56,6 +56,8 @@ rest:
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'lat' in value_json.trackPoints[-1].position %}{{ value_json.trackPoints[-1].position.lat }}{% endif %}"
       - name: Garmin LiveTrack position lon
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'lon' in value_json.trackPoints[-1].position %}{{ value_json.trackPoints[-1].position.lon }}{% endif %}"
+      - name: Garmin LiveTrack position address
+        value_template: "{% if value_json is defined and 'sessionUrl' in value_json %}{{ value_json.positionAddress }}{% endif %}"
       - name: Garmin LiveTrack created time
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'activityCreatedTime' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.activityCreatedTime | as_timestamp | timestamp_custom('%d-%m-%Y %H:%M') }}{% endif %}"
       - name: Garmin LiveTrack finished
@@ -107,6 +109,9 @@ cards:
         - entity: sensor.garmin_livetrack_distance
           name: Dystans
           icon: mdi:arrow-up-down-bold
+        - entity: sensor.garmin_livetrack_position_address
+          name: Lokalizacja
+          icon: mdi:map-marker
         - entity: sensor.garmin_livetrack_altitude
           name: Wysokość
           icon: mdi:altimeter
