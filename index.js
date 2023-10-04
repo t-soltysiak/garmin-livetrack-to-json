@@ -34,7 +34,6 @@ let config = {
 
 const geocoder = NodeGeocoder({
   provider: 'google',
-  fetch: customFetchImplementation,
 });
 
 log.info(`Starting garmin-livetrack-to-json v${VERSION}`);
