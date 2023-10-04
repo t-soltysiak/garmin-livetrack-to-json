@@ -75,7 +75,7 @@ const fetchData = async (id, token, res) => {
     const sessionDataWithUrl = {
       ...{
         "sessionUrl": `https://livetrack.garmin.com/session/${id}/token/${token}`,
-        "positionAddress": reverse.address
+        "positionAddress": `${reverse.city}, ${reverse.streetName} ${reverse.streetNumber}`,
       },
       ...sessionData
     }
