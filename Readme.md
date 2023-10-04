@@ -146,5 +146,40 @@ cards:
         aspect_ratio: 100%
 ```
 
+Example (optional) automatization for notification where user rides executed every 5 kilometers on some chromecast speakers :-)
+```
+alias: Powiadom gdy Tomasz gdzie jeździ rowerem
+description: ""
+trigger:
+  - platform: state
+    entity_id: sensor.garmin_livetrack_distance
+condition:
+  - condition: template
+    value_template: >-
+      {{ (states('sensor.garmin_livetrack_distance') | int) % 5 == 0 and
+      (states('sensor.garmin_livetrack_distance') | int) > 0 }}
+  - condition: state
+    entity_id: sensor.garmin_livetrack_data
+    state: available
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 1
+  - condition: state
+    entity_id: sensor.garmin_livetrack_finished
+    state: TRWAJĄCA!
+  - condition: numeric_state
+    entity_id: sensor.garmin_livetrack_distance
+    above: 1
+action:
+  - service: script.tts_chromecast
+    data:
+      message: >-
+        Tomasza dystans przejechanych na rowerze kilometrów wynosi {{
+        states('sensor.garmin_livetrack_distance') | round(0) }} a jego lokalizacja to {{
+        states('sensor.garmin_livetrack_position_address') }}.
+mode: single
+```
+
 Above HA Conditional Card https://www.home-assistant.io/dashboards/conditional/ automatically will show when LiveTrack status is on going or recently finished.
 If not data is fetched from Garmin servers (see logs e. g. with systemctl status garmin -n 50) card will be not visible to not take up space on the dashboards.
