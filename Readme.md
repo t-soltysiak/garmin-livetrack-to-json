@@ -82,7 +82,9 @@ rest:
 
 3) Install by HACS this plugin https://github.com/iantrich/config-template-card for custom iframe (preview with map etc.) cause default webpage card does not support passing dynamic urls
 
-4) Edit dashboard Yaml:
+4) Create helper type number and name "garmin_notify" in Settings -> Helpers - it will be used for notifications with current position address every X kilometers (for example automation)
+
+5) Edit dashboard Yaml:
 ```
 type: vertical-stack
 cards:
@@ -112,6 +114,9 @@ cards:
         - entity: sensor.garmin_livetrack_position_address
           name: Lokalizacja
           icon: mdi:map-marker
+        - entity: input_number.garmin_notify
+          name: Co ile km powiadom
+          icon: mdi:map-marker-alert
         - entity: sensor.garmin_livetrack_altitude
           name: Wysokość
           icon: mdi:altimeter
@@ -146,7 +151,7 @@ cards:
         aspect_ratio: 100%
 ```
 
-Example (optional) automatization for notification where user rides executed every 5 kilometers on some chromecast speakers :-)
+6) Create automatization for notification where user rides executed every X kilometers on some chromecast speakers :-)
 ```
 alias: Powiadom gdy Tomasz gdzie jeździ rowerem
 description: ""
@@ -156,8 +161,7 @@ trigger:
 condition:
   - condition: template
     value_template: >-
-      {{ (states('sensor.garmin_livetrack_distance') | int) % 5 == 0 and
-      (states('sensor.garmin_livetrack_distance') | int) > 0 }}
+      {{ states('sensor.garmin_livetrack_distance') | int % states('input_number.garmin_notify') | int == 0 and (states('sensor.garmin_livetrack_distance') | int) > 0 }}
   - condition: state
     entity_id: sensor.garmin_livetrack_data
     state: available
