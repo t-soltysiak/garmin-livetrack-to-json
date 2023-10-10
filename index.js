@@ -173,7 +173,7 @@ const requestListener = async (req, res) => {
         return;
       }
     } else {
-      log.info(`SessionFile ${sessionFile} not exists, no session yet`);
+      log.info(`SessionFile ${sessionFile} not exists, no session yet or create empty session file and restart`);
     }
   } else {
     res.end();
