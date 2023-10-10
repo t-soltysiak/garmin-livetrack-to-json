@@ -153,15 +153,15 @@ cards:
 
 6) Create automatization for notification where user rides executed every X kilometers on some chromecast speakers :-)
 ```
-alias: Powiadom gdy Tomasz gdzie jeździ rowerem
+alias: Powiadom gdy Tomasz jeździ rowerem
 description: ""
 trigger:
-  - platform: state
-    entity_id: sensor.garmin_livetrack_distance
-condition:
-  - condition: template
+  - platform: template
     value_template: >-
-      {{ states('sensor.garmin_livetrack_distance') | int % states('input_number.garmin_notify') | int == 0 and (states('sensor.garmin_livetrack_distance') | int) > 0 }}
+      {{ states('sensor.garmin_livetrack_distance') | int %
+      states('input_number.garmin_notify') | int == 0 and
+      (states('sensor.garmin_livetrack_distance') | int) > 0 }}
+condition:
   - condition: state
     entity_id: sensor.garmin_livetrack_data
     state: available
@@ -179,8 +179,8 @@ action:
   - service: script.tts_chromecast
     data:
       message: >-
-        Tomasza dystans przejechanych na rowerze kilometrów wynosi {{
-        states('sensor.garmin_livetrack_distance') | round(0) }} a jego lokalizacja to {{
+        Tomasz przejechał rowerem {{ states('sensor.garmin_livetrack_distance')
+        | int }} kilometrów. Jego aktualna lokalizacja to {{
         states('sensor.garmin_livetrack_position_address') }}.
 mode: single
 ```
