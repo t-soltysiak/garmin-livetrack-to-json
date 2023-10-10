@@ -42,7 +42,7 @@ module.exports = class Mail {
       log.info('Searching for emails from Garmin')
       
       this._imap.search([
-        ['FROM', 'noreply@garmin.com'],
+        ['BODY', 'Garmin'], // ['FROM', 'noreply@garmin.com'],
         ['SINCE', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)]   // Past 7 days
       ], (err, results) => {
         
