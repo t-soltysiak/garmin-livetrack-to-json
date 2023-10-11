@@ -53,6 +53,9 @@ rest:
       - name: Garmin LiveTrack speed
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'speed' in value_json.trackPoints[-1] %}{{ ((value_json.trackPoints[-1].speed) | float * 3.6) | round(1) }}{% endif %}"
         unit_of_measurement: "km/h"
+      - name: Garmin LiveTrack averange speed
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'durationSecs' in value_json.trackPoints[-1].fitnessPointData and 'distanceMeters' in value_json.trackPoints[-1].fitnessPointData %}{{ (((value_json.trackPoints[-1].fitnessPointData.distanceMeters / 1000) / (value_json.trackPoints[-1].fitnessPointData.durationSecs / 60)) * 60) | round(2) }}{% endif %}"
+        unit_of_measurement: "km/h"
       - name: Garmin LiveTrack position lat
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'lat' in value_json.trackPoints[-1].position %}{{ value_json.trackPoints[-1].position.lat }}{% endif %}"
       - name: Garmin LiveTrack position lon
@@ -66,6 +69,8 @@ rest:
       - name: Garmin LiveTrack activity type
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'activityType' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.activityType | lower }}{% endif %}"
       - name: Garmin LiveTrack duration
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'durationSecs' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.durationSecs | timestamp_custom('%H:%M:%S', false) }}{% endif %}"
+      - name: Garmin LiveTrack total duration
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'totalDurationSecs' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.totalDurationSecs | timestamp_custom('%H:%M:%S', false) }}{% endif %}"
       - name: Garmin LiveTrack distance
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'distanceMeters' in value_json.trackPoints[-1].fitnessPointData %}{{ ((value_json.trackPoints[-1].fitnessPointData.distanceMeters | int(0))/1000) | round(2) }}{% endif %}"
@@ -107,6 +112,9 @@ cards:
           name: Czas rozpoczęcia
           icon: mdi:av-timer
         - entity: sensor.garmin_livetrack_duration
+          name: Czas jazdy
+          icon: mdi:av-timer
+        - entity: sensor.garmin_livetrack_total_duration
           name: Czas trwania
           icon: mdi:av-timer
         - entity: sensor.garmin_livetrack_distance
@@ -121,6 +129,9 @@ cards:
         - entity: sensor.garmin_livetrack_altitude
           name: Wysokość
           icon: mdi:altimeter
+        - entity: sensor.garmin_livetrack_averange_speed
+          name: Średnia prędkość
+          icon: mdi:speedometer
         - entity: sensor.garmin_livetrack_speed
           name: Prędkość
           icon: mdi:speedometer
@@ -181,10 +192,12 @@ action:
     data:
       message: >-
         Tomasz przejechał rowerem {{ states('sensor.garmin_livetrack_distance')
-        | int }} kilometrów. Jego aktualna lokalizacja to {{
+        | int }} kilometrów ze średnią prędkością około {{ states('sensor.garmin_livetrack_averange_speed') | int }} kilometrów na godzinę. Jego aktualna lokalizacja to {{
         states('sensor.garmin_livetrack_position_address') }}.
 mode: single
 ```
+
+7) You can also add hide activity button visible on screenshot by creating boolean helper and conditional visibility of dashboard card (optional)
 
 Above HA Conditional Card https://www.home-assistant.io/dashboards/conditional/ automatically will show when LiveTrack status is on going or recently finished.
 If not data is fetched from Garmin servers (see logs e. g. with systemctl status garmin -n 50) card will be not visible to not take up space on the dashboards.
