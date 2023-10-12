@@ -70,7 +70,7 @@ const fetchData = async (id, token, res) => {
     finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
     log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING');
     log.info('Getting last position reverse geocode address');
-    const lastPosition = sessionData.trackPoints[1].position;
+    const lastPosition = sessionData.trackPoints[5].position;
     log.info('Latitude: '+lastPosition.lat+' Longitude:' + lastPosition.lon);
     const reverse = await geocoder.reverse({ lat: lastPosition.lat, lon: lastPosition.lon });
     log.info('Geocoder reverse: '+JSON.stringify(reverse));
