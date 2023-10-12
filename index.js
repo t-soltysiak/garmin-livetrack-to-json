@@ -78,7 +78,7 @@ const fetchData = async (id, token, res) => {
     const sessionDataWithUrl = {
       ...{
         "sessionUrl": `https://livetrack.garmin.com/session/${id}/token/${token}`,
-        "positionAddress": `${city}, ${config.geocoderStreet} ${streetName}${streetNumber ? ` ${streetNumber}` : ''}`,
+        "positionAddress": `${city}${streetName ? `, ${config.geocoderStreet} ${streetName}` : ''}${streetName && streetNumber ? ` ${streetNumber}` : ''}`,
       },
       ...sessionData
     }
