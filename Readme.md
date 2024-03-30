@@ -74,8 +74,8 @@ rest:
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'durationSecs' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.durationSecs | timestamp_custom('%H:%M:%S', false) }}{% endif %}"
       - name: Garmin LiveTrack total duration
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'totalDurationSecs' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.totalDurationSecs | timestamp_custom('%H:%M:%S', false) }}{% endif %}"
-      - name: Garmin LiveTrack distance
-        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'distanceMeters' in value_json.trackPoints[-1].fitnessPointData %}{{ ((value_json.trackPoints[-1].fitnessPointData.distanceMeters | int(0))/1000) | round(2) }}{% endif %}"
+      - name: Garmin LiveTrack total distance
+        value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'totalDistanceMeters' in value_json.trackPoints[-1].fitnessPointData %}{{ ((value_json.trackPoints[-1].fitnessPointData.totalDistanceMeters | int(0))/1000) | round(2) }}{% endif %}"
         unit_of_measurement: "km"
       - name: Garmin LiveTrack cadence
         value_template: "{% if value_json is defined and 'trackPoints' in value_json and (value_json.trackPoints | length) > 0 and 'fitnessPointData' in value_json.trackPoints[-1] and 'cadenceCyclesPerMin' in value_json.trackPoints[-1].fitnessPointData %}{{ value_json.trackPoints[-1].fitnessPointData.cadenceCyclesPerMin }}{% endif %}"
@@ -119,7 +119,7 @@ cards:
         - entity: sensor.garmin_livetrack_total_duration
           name: Czas trwania
           icon: mdi:av-timer
-        - entity: sensor.garmin_livetrack_distance
+        - entity: sensor.garmin_livetrack_total_distance
           name: Dystans
           icon: mdi:arrow-up-down-bold
         - entity: sensor.garmin_livetrack_position_address
