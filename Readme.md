@@ -42,6 +42,8 @@ systemctl enable --now garmin
 ```
 rest:
   - resource: http://127.0.0.1:8200/b50ff165-effa-45d6-b24b-6ff06a03e846
+    scan_interval: 60
+    timeout: 30
     sensor:
       - name: Garmin LiveTrack URL
         value_template: "{% if value_json is defined and 'sessionUrl' in value_json %}{{ value_json.sessionUrl }}{% endif %}"
