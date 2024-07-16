@@ -4,7 +4,6 @@ const http = require('http');
 const assign = require('assign-deep');
 const fs = require("fs"); 
 const moment = require('moment');
-const NodeGeocoder = require('node-geocoder');
 
 const VERSION = require('./package.json').version
 const sessionFile = 'session.txt';
@@ -32,10 +31,6 @@ let config = {
 
   geocoderStreet: 'ul.'
 };
-
-const geocoder = NodeGeocoder({
-  provider: 'openstreetmap',
-});
 
 log.info(`Starting garmin-livetrack-to-json v${VERSION}`);
 
@@ -71,13 +66,13 @@ const fetchData = async (id, token, res) => {
     log.info('Getting last position reverse geocode address');
     const lastPosition = sessionData.trackPoints[sessionData.trackPoints.length-1].position;
     log.info('Latitude: '+lastPosition.lat+' Longitude:' + lastPosition.lon);
-    let reverse = {};
     let city = '';
     let streetName = '';
     let streetNumber = '';
     try {
-      reverse = await geocoder.reverse({ lat: lastPosition.lat, lon: lastPosition.lon });
-      log.info('Geocoder reverse: '+JSON.stringify(reverse));
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lastPosition.lat}&lon=${lastPosition.lon}&format=json&addressdetails=1`);
+      const reverse = await response.json();
+      log.info('Geocoder reverse data: '+JSON.stringify(reverse));
       city = reverse[0].city;
       streetName = reverse[0].streetName;
       streetNumber = reverse[0].streetNumber;
