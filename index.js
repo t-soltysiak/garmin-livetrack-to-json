@@ -72,10 +72,10 @@ const fetchData = async (id, token, res) => {
     try {
       const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lastPosition.lat}&lon=${lastPosition.lon}&format=json&addressdetails=1`);
       const reverse = await response.json();
-      log.info('Geocoder reverse data: '+reverse);
       city = reverse.city;
       streetName = reverse.streetName;
       streetNumber = reverse.streetNumber;
+      log.info(`Geocoder reverse data: ${city} ${streetName} ${streetNumber}`);
     } catch (e) {
       log.warn("There was problem with getting reverse geocoded address", e);
     }
