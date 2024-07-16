@@ -2,10 +2,10 @@ const log = require('signale').scope('Core');
 const Mail = require('./mail');
 const http = require('http');
 const assign = require('assign-deep');
-const fs = require("fs"); 
+const fs = require('fs');
 const moment = require('moment');
 
-const VERSION = require('./package.json').version
+const VERSION = require('./package.json').version;
 const sessionFile = 'session.txt';
 
 let config = {
@@ -29,7 +29,7 @@ let config = {
   httpHost: 'localhost',
   httpPort: 8200,
 
-  geocoderStreet: 'ul.'
+  geocoderStreet: 'ul.',
 };
 
 log.info(`Starting garmin-livetrack-to-json v${VERSION}`);
@@ -37,7 +37,9 @@ log.info(`Starting garmin-livetrack-to-json v${VERSION}`);
 try {
   assign(config, require('./config.js'));
 } catch (e) {
-  log.warn("You should create an config.js file based on the config.template.js template to overwrite the default values")
+  log.warn(
+    'You should create an config.js file based on the config.template.js template to overwrite the default values'
+  );
 }
 
 const fetchData = async (id, token, res) => {
@@ -46,7 +48,9 @@ const fetchData = async (id, token, res) => {
   const response = await fetch(url);
 
   if (response.status !== 200) {
-    log.warn("Invalid response received - The previous link may have expired and the new one hasn't been delivered yet?");
+    log.warn(
+      "Invalid response received - The previous link may have expired and the new one hasn't been delivered yet?"
+    );
     dataText = await response.text();
     log.warn(`response: ${dataText}`);
     return;
@@ -58,34 +62,50 @@ const fetchData = async (id, token, res) => {
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
   finished = true;
-  fetchedData = typeof sessionData !== 'undefined' && typeof sessionData.trackPoints !== 'undefined' && sessionData.trackPoints.length > 0 && typeof sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData !== 'undefined';
+  fetchedData =
+    typeof sessionData !== 'undefined' &&
+    typeof sessionData.trackPoints !== 'undefined' &&
+    sessionData.trackPoints.length > 0 &&
+    typeof sessionData.trackPoints[sessionData.trackPoints.length - 1]
+      .fitnessPointData !== 'undefined';
   if (fetchedData) {
     log.info('Data is fetched. Activity status check');
-    finished = sessionData.trackPoints[sessionData.trackPoints.length-1].fitnessPointData.eventTypes[1] === 'END';
+    finished =
+      sessionData.trackPoints[sessionData.trackPoints.length - 1]
+        .fitnessPointData.eventTypes[1] === 'END';
     log.info(finished ? 'Activity is FINISHED' : 'Activity is ONGOING');
     log.info('Getting last position reverse geocode address');
-    const lastPosition = sessionData.trackPoints[sessionData.trackPoints.length-1].position;
-    log.info('Latitude: '+lastPosition.lat+' Longitude:' + lastPosition.lon);
+    const lastPosition =
+      sessionData.trackPoints[sessionData.trackPoints.length - 1].position;
+    log.info(
+      'Latitude: ' + lastPosition.lat + ' Longitude:' + lastPosition.lon
+    );
     let city = '';
     let streetName = '';
     let streetNumber = '';
     try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lastPosition.lat}&lon=${lastPosition.lon}&format=json&addressdetails=1`);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lastPosition.lat}&lon=${lastPosition.lon}&format=json&addressdetails=1`
+      );
       const reverse = await response.json();
-      city = reverse.address.city;
+      city = typeof reverse.address.village !== 'undefined'
+        ? reverse.address.village
+        : reverse.address.city;
       streetName = reverse.address.road;
       streetNumber = reverse.address.house_number;
       log.info(`Geocoder reverse data: ${city} ${streetName} ${streetNumber}`);
     } catch (e) {
-      log.warn("There was problem with getting reverse geocoded address", e);
+      log.warn('There was problem with getting reverse geocoded address', e);
     }
     const sessionDataWithUrl = {
       ...{
-        "sessionUrl": `https://livetrack.garmin.com/session/${id}/token/${token}`,
-        "positionAddress": `${city ? `${city}` : ''}${streetName ? `, ${config.geocoderStreet} ${streetName}` : ''}${streetName && streetNumber ? ` ${streetNumber}` : ''}`,
+        sessionUrl: `https://livetrack.garmin.com/session/${id}/token/${token}`,
+        positionAddress: `${city ? `${city}` : ''}${
+          streetName ? `, ${config.geocoderStreet} ${streetName}` : ''
+        }${streetName && streetNumber ? ` ${streetNumber}` : ''}`,
       },
-      ...sessionData
-    }
+      ...sessionData,
+    };
     log.info('Writing session data as response');
     res.write(JSON.stringify(sessionDataWithUrl));
   } else {
@@ -111,14 +131,22 @@ const requestListener = async (req, res) => {
     log.info(`New request from client to valid secret url path`);
     log.info(`Checking ${config.mailDir} modification date`);
     const mailDirModifTime = fs.statSync(config.mailDir).mtime;
-    const diffMinutes = Math.round(moment.duration(moment().diff(mailDirModifTime)).asMinutes());
-    log.info(`Dir modified ${diffMinutes} min. ago: ${moment(mailDirModifTime).format('YYYY-MM-DD HH:mm:ss')}`);
-    if (!config.localUser || config.localUser && diffMinutes < config.maxWaitForSession) {
+    const diffMinutes = Math.round(
+      moment.duration(moment().diff(mailDirModifTime)).asMinutes()
+    );
+    log.info(
+      `Dir modified ${diffMinutes} min. ago: ${moment(mailDirModifTime).format(
+        'YYYY-MM-DD HH:mm:ss'
+      )}`
+    );
+    if (
+      !config.localUser ||
+      (config.localUser && diffMinutes < config.maxWaitForSession)
+    ) {
       log.info('Checking email for new session');
       try {
         mail.connect();
-      }
-      catch(error) {
+      } catch (error) {
         log.error(`Connection error: ${error}`);
         mail._imap.end();
       }
@@ -126,7 +154,7 @@ const requestListener = async (req, res) => {
       let waitCount = 0;
       const timer = setInterval(() => {
         if (!mail.sessionInfo.Id || !mail.sessionInfo.Token) {
-          log.info("Waiting for session info...");
+          log.info('Waiting for session info...');
           waitCount++;
           if (waitCount >= config.maxWaitForSession) {
             log.info(`Session not found in ${waitCount} attemps`);
@@ -141,21 +169,29 @@ const requestListener = async (req, res) => {
           clearInterval(timer);
           log.info('Found Garmin session, saving to file');
           try {
-            fs.writeFileSync(sessionFile, `${moment().format('L')}|${mail.sessionInfo.Id}|${mail.sessionInfo.Token}`);
+            fs.writeFileSync(
+              sessionFile,
+              `${moment().format('L')}|${mail.sessionInfo.Id}|${
+                mail.sessionInfo.Token
+              }`
+            );
           } catch (err) {
             log.error(err);
             return;
-          }   
+          }
           return;
-        };
+        }
       }, config.waitForId);
-    } else {    
+    } else {
       log.info('Today there is no new mail so no need to connect');
     }
     if (fs.existsSync(sessionFile)) {
       log.info(`Getting session data from sessionFile ${sessionFile}`);
       try {
-        const sessionSave = fs.readFileSync(sessionFile, { encoding: 'utf8', flag: 'r' });
+        const sessionSave = fs.readFileSync(sessionFile, {
+          encoding: 'utf8',
+          flag: 'r',
+        });
         const sessionDate = sessionSave.split('|')[0];
         const sessionId = sessionSave.split('|')[1];
         const sessionToken = sessionSave.split('|')[2];
@@ -177,7 +213,9 @@ const requestListener = async (req, res) => {
         return;
       }
     } else {
-      log.info(`SessionFile ${sessionFile} not exists, no session yet or create empty session file and restart`);
+      log.info(
+        `SessionFile ${sessionFile} not exists, no session yet or create empty session file and restart`
+      );
     }
   } else {
     res.end();
