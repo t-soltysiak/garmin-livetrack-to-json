@@ -1,7 +1,6 @@
 const log = require('signale').scope('Core');
 const Mail = require('./mail');
 const http = require('http');
-const fetch = require('node-fetch');
 const assign = require('assign-deep');
 const fs = require("fs"); 
 const moment = require('moment');
