@@ -121,15 +121,12 @@ cards:
         - entity: sensor.garmin_livetrack_total_duration
           name: Czas trwania
           icon: mdi:av-timer
-        - entity: sensor.garmin_livetrack_total_distance
-          name: Dystans
-          icon: mdi:arrow-up-down-bold
         - entity: sensor.garmin_livetrack_position_address
           name: Lokalizacja
           icon: mdi:map-marker
-        - entity: input_number.garmin_notify
-          name: Co ile km powiadom
-          icon: mdi:map-marker-alert
+        - entity: sensor.garmin_livetrack_total_distance
+          name: Dystans
+          icon: mdi:arrow-up-down-bold
         - entity: sensor.garmin_livetrack_altitude
           name: Wysokość
           icon: mdi:altimeter
@@ -151,6 +148,9 @@ cards:
         - entity: sensor.garmin_livetrack_datetime
           name: Czas aktualizacji
           icon: mdi:av-timer
+        - entity: input_number.garmin_notify
+          name: Co ile km powiadom
+          icon: mdi:map-marker-alert
   - type: conditional
     conditions:
       - entity: sensor.garmin_livetrack_data
