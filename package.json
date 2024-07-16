@@ -1,6 +1,6 @@
 {
   "name": "garmin-livetrack-to-json",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Serve JSON response from a Garmin Livetrack email",
   "main": "index.js",
   "directories": {
@@ -29,9 +29,9 @@
     "assign-deep": "^1.0.1",
     "imap": "^0.8.19",
     "mimelib": "^0.3.1",
-    "moment": "^2.29.4",
-    "node-fetch": "^2.6.0",
-    "node-geocoder": "^4.2.0",
+    "moment": "^2.30.1",
+    "node-fetch": "^3.3.2",
+    "node-geocoder": "^4.3.0",
     "signale": "^1.4.0"
   },
   "signale": {
