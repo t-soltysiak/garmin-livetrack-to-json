@@ -182,7 +182,10 @@ trigger:
       hours: 0
       minutes: 0
       seconds: 0
-condition: []
+condition:
+  - condition: state
+    entity_id: sensor.garmin_livetrack_activity_type
+    state: cycling
 action:
   - service: script.tts_chromecast
     data:
@@ -201,7 +204,10 @@ trigger:
       - sensor.garmin_livetrack_finished
     to: zakończona
     from: TRWAJĄCA!
-condition: []
+condition:
+  - condition: state
+    entity_id: sensor.garmin_livetrack_activity_type
+    state: cycling
 action:
   - service: script.tts_chromecast
     data:
