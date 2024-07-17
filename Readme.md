@@ -101,6 +101,9 @@ cards:
     conditions:
       - entity: sensor.garmin_livetrack_activity_type
         state: cycling
+      - condition: state
+        entity: sensor.garmin_livetrack_url
+        state_not: Niedostępne
     card:
       type: entities
       title: 'LiveTrack: Tomasz'
@@ -154,6 +157,9 @@ cards:
     conditions:
       - entity: sensor.garmin_livetrack_activity_type
         state: cycling
+      - condition: state
+        entity: sensor.garmin_livetrack_url
+        state_not: Niedostępne
     card:
       type: custom:config-template-card
       variables:
