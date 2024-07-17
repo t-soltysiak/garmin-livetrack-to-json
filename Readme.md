@@ -223,9 +223,9 @@ description: ""
 trigger:
   - platform: template
     value_template: >-
-      {{ states('sensor.garmin_livetrack_total_distance') | int %
-      states('input_number.garmin_notify') | int == 0 and
-      (states('sensor.garmin_livetrack_total_distance') | int) > 0 }}
+      {{ states('sensor.garmin_livetrack_total_distance') | int(0) %
+      states('input_number.garmin_notify') | int(0) == 0 and
+      (states('sensor.garmin_livetrack_total_distance') | int(0)) > 0 }}
 condition:
   - condition: state
     entity_id: sensor.garmin_livetrack_finished
